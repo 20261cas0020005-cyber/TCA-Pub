@@ -1196,12 +1196,14 @@ public class BrincandoComTCA {
 
             limparTelas();
 
-            // ToDo: Melhorar final de partida(Ascii, melhor jogador da partida, som de
-            // vitória)
+            jogadores.sort(Comparator.comparingInt((Jogador j) -> j.points).reversed());
 
-            System.out.printf("Sua pontuação: " + pontuacaoServer + ".\n");
-            for (Jogador jogador : jogadores) {
-                jogador.out.printf("Sua pontuação: " + jogador.points + ".\n");
+            int place = 1;
+            for(Jogador jogadorP : jogadores){
+                for(Jogador jogador : jogadores){
+                    jogador.out.printf("%dst Place (%d points): %s\n", place, jogadorP.points, jogadorP.name);
+                }
+                place++;
             }
 
         } catch (IOException e) {
