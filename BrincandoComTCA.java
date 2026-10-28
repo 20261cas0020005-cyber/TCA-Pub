@@ -863,6 +863,7 @@ public class BrincandoComTCA {
         telinhafim();
         mudarCor(COR_PADRAO);
         System.out.printf("Sua pontuação: " + pontuacao + ".\n");
+        
 
     }
 
@@ -1265,19 +1266,25 @@ public class BrincandoComTCA {
 
         // 🌟Entradas
         Thread.sleep(500);
+        mudarCor(5);
         System.out.println("\nComeçaremos criando um tamanho para nossa mesa de jogo.");
+        mudarCor(COR_PADRAO);
         Thread.sleep(500);
         System.out.println();
 
         while (true) {
             while (true) {
+                mudarCor(5);
                 System.out.printf("Insira uma quantidade de fileiras: ");
+                mudarCor(COR_PADRAO);
                 try {
                     fileiras = Integer.parseInt(TECLADO.nextLine());
                     break;
                 } catch (NumberFormatException e) {
                     Thread.sleep(100);
+                    mudarCor(1);
                     System.out.println("\nEntrada inválida. Números, por favor.\n");
+                    mudarCor(COR_PADRAO);
                     Thread.sleep(600);
                 }
             }
@@ -1285,13 +1292,17 @@ public class BrincandoComTCA {
             System.out.println();
 
             while (true) {
+                mudarCor(5);
                 System.out.printf("Insira uma quantidade de colunas: ");
+                mudarCor(COR_PADRAO);
                 try {
                     colunas = Integer.parseInt(TECLADO.nextLine());
                     break;
                 } catch (NumberFormatException e) {
                     Thread.sleep(100);
+                    mudarCor(5);
                     System.out.println("\nEntrada inválida. Números, por favor.\n");
+                    mudarCor(COR_PADRAO);
                     Thread.sleep(600);
                 }
             }
@@ -1301,9 +1312,11 @@ public class BrincandoComTCA {
             } else {
                 // Se tiver número ímpar de casas, nem todas as Cartas terão seu par
                 // correspondente
+                mudarCor(1);
                 System.out.printf(
                         "\nAs peças que seriam utilizadas para criar um formato de %d:%d, serão de quantidade ÍMPAR (nem todas as Cartas terão um par correspondente) ou um formato de tamanho inválido foi inserido (zero ou negativo).\nInsira outro formato.\n",
                         fileiras, colunas);
+                mudarCor(COR_PADRAO);
                 Thread.sleep(2000);
             }
         }
@@ -1332,8 +1345,10 @@ public class BrincandoComTCA {
             linhas.get(listaPalavras.length - 1); // Quick-check para checar a integridade(mínima, mesmo que parcial) do
                                                   // arquivo. (se não possui o mínimo de linhas necessário, problema.)
         } catch (IOException e) {
+            mudarCor(1);
             System.out.println(
                     "Arquivo de dicionário não encontrado ou muito pequeno, por favor, reinstale o jogo ou crie um dicionário.");
+            mudarCor(COR_PADRAO);
             return;
         }
 
