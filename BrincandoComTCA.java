@@ -317,7 +317,7 @@ public class BrincandoComTCA {
         return false;
     }
 
-    public static boolean descobrirNomeExiste(String name) {
+    public static boolean descobrirNomeExiste(String name) {//para ponhar o nome quando é multiplayer
         if (name.equals("SERVER"))
             return true; // Aqui NÃO pode falhar, melhor ser redundante mesmo.
 
