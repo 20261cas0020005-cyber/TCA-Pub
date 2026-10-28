@@ -1410,14 +1410,16 @@ public class BrincandoComTCA {
                 }
             }
 
-            if (escolhaSPMP > 2 || escolhaSPMP < 1){
+            if(escolhaSPMP > 2 || escolhaSPMP < 1){
                 mudarCor(1);
                 System.out.println("\nSua resposta precisa ser '1' ou '2'!");
                 mudarCor(COR_PADRAO);
-            }else
+            }else{
                 break;
+            }
             Thread.sleep(300);
         
+        }
 
         switch (escolhaSPMP) {
             case (1):
@@ -1432,5 +1434,4 @@ public class BrincandoComTCA {
         }
     }
 
-}
 }
