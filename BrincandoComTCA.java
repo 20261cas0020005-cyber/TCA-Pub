@@ -859,7 +859,7 @@ public class BrincandoComTCA {
         }
 
         limparTela();
-        mudarCor(2);
+        mudarCor(3);
         telinhafim();
         mudarCor(COR_PADRAO);
         System.out.printf("Sua pontuação: " + pontuacao + ".\n");
@@ -1266,7 +1266,7 @@ public class BrincandoComTCA {
 
         // 🌟Entradas
         Thread.sleep(500);
-        mudarCor(5);
+        mudarCor(15);
         System.out.println("\nComeçaremos criando um tamanho para nossa mesa de jogo.");
         mudarCor(COR_PADRAO);
         Thread.sleep(500);
@@ -1274,7 +1274,7 @@ public class BrincandoComTCA {
 
         while (true) {
             while (true) {
-                mudarCor(5);
+                mudarCor(15);
                 System.out.printf("Insira uma quantidade de fileiras: ");
                 mudarCor(COR_PADRAO);
                 try {
@@ -1292,7 +1292,7 @@ public class BrincandoComTCA {
             System.out.println();
 
             while (true) {
-                mudarCor(5);
+                mudarCor(15);
                 System.out.printf("Insira uma quantidade de colunas: ");
                 mudarCor(COR_PADRAO);
                 try {
@@ -1300,7 +1300,7 @@ public class BrincandoComTCA {
                     break;
                 } catch (NumberFormatException e) {
                     Thread.sleep(100);
-                    mudarCor(5);
+                    mudarCor(1);
                     System.out.println("\nEntrada inválida. Números, por favor.\n");
                     mudarCor(COR_PADRAO);
                     Thread.sleep(600);
@@ -1317,6 +1317,7 @@ public class BrincandoComTCA {
                         "\nAs peças que seriam utilizadas para criar um formato de %d:%d, serão de quantidade ÍMPAR (nem todas as Cartas terão um par correspondente) ou um formato de tamanho inválido foi inserido (zero ou negativo).\nInsira outro formato.\n",
                         fileiras, colunas);
                 mudarCor(COR_PADRAO);
+                System.out.println();
                 Thread.sleep(2000);
             }
         }
@@ -1394,23 +1395,29 @@ public class BrincandoComTCA {
         int escolhaSPMP; // (SP = Single Player, MP = Multi Player)
         while (true) {
             while (true) {
+                mudarCor(2);
                 System.out.printf("\nQuer jogar single-player ou multi-player?\n1. Single-Player\n2. Multi-Player.\n");
+                mudarCor(COR_PADRAO);
                 try {
                     escolhaSPMP = Integer.parseInt(TECLADO.nextLine());
                     break;
                 } catch (NumberFormatException e) {
                     Thread.sleep(700);
+                    mudarCor(1);
                     System.out.println("\nEntrada inválida. Números, por favor.");
+                    mudarCor(COR_PADRAO);
                     Thread.sleep(1000);
                 }
             }
 
-            if (escolhaSPMP > 2 || escolhaSPMP < 1)
+            if (escolhaSPMP > 2 || escolhaSPMP < 1){
+                mudarCor(1);
                 System.out.println("\nSua resposta precisa ser '1' ou '2'!");
-            else
+                mudarCor(COR_PADRAO);
+            }else
                 break;
             Thread.sleep(300);
-        }
+        
 
         switch (escolhaSPMP) {
             case (1):
@@ -1425,4 +1432,5 @@ public class BrincandoComTCA {
         }
     }
 
+}
 }
