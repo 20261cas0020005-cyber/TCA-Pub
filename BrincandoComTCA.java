@@ -80,12 +80,40 @@ public class BrincandoComTCA{
     }
 
     // Métodos do Ló
-    public static int pegarNumeroAleatorio(int min, int max){
-        return (int)(Math.random() * (max-min +1)) +min;
+
+    public static int pegarNumeroAleatorio(int min, int max) {
+        return (int) (Math.random() * (max - min + 1)) + min;
     }
     public static void gotoXY(int linha, int coluna) {
         char escCode = 0x1B;
         System.out.print(String.format("%c[%d;%df", escCode, linha, coluna));
+    }
+
+    public static final int PRETO = 0;
+    public static final int VERMELHO = 1;
+    public static final int VERDE = 2;
+    public static final int AMARELO = 3;
+    public static final int AZUL = 4;
+    public static final int MAGENTA = 5;
+    public static final int CIANO = 6;
+    public static final int CINZA = 7;
+    public static final int BRANCO = 15;
+    public static final int COR_PADRAO = -1; // a cor original do terminal
+
+    public static void mudarCor(int cor) {
+        if (cor >= 0 && cor <= 255) {
+            System.out.print("\033[38;5;" + cor + "m");
+        } else {
+            System.out.print("\033[39m"); // cor padrão do terminal
+        }
+    }
+
+    public static void mudarCorFundo(int cor) {
+        if (cor >= 0 && cor <= 255) {
+            System.out.print("\033[48;5;" + cor + "m");
+        } else {
+            System.out.print("\033[49m"); // cor padrão do terminal
+        }
     }
 
     public static void jogadorGotoXY(Jogador jogador, int linha, int coluna) {
@@ -666,10 +694,10 @@ public class BrincandoComTCA{
 
         limparTela();
 
-        System.out.printf("END GAME!\n");
+       telinhafim();
         System.out.printf("Sua pontuação: " + pontuacao + ".\n");
-                    
-	}
+
+    }
 
 	public static void comecarPartidaMultiPlayer() throws InterruptedException {
 		String inputStr;
@@ -985,18 +1013,17 @@ public class BrincandoComTCA{
 
             limparTelas();
 
+            // ToDo: Melhorar final de partida(Ascii, melhor jogador da partida, som de
+            // vitória)
             
-            jogadores.sort(Comparator.comparingInt((Jogador j) -> j.points).reversed());
-
-            int place = 1;
-            for(Jogador jogadorP : jogadores){
-                for(Jogador jogador : jogadores){
-                    jogador.out.printf("%dst Place (%d points): %s\n", place, jogadorP.points, jogadorP.name);
-                }
-                place++;
+            System.out.printf("Sua pontuação: " + pontuacaoServer + ".\n");
+            for (Jogador jogador : jogadores) {
+                jogador.out.printf("Sua pontuação: " + jogador.points + ".\n");
             }
 
-		}catch(IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 	}
 
@@ -1042,50 +1069,56 @@ public class BrincandoComTCA{
     */
 
 
-		// Tela de start/bem-vindo
-		telaInicial();
-		System.out.println();
-		TECLADO.nextLine();
+        // Tela de start/bem-vindo
+        telaInicial();
+        System.out.println();
+        TECLADO.nextLine();
 
-
-		// 🌟Entradas
-		Thread.sleep(500);
-		System.out.println("\nComeçaremos criando um tamanho para nossa mesa de jogo.");
-		Thread.sleep(500);
+        // 🌟Entradas
+        Thread.sleep(500);
+        System.out.println("\nComeçaremos criando um tamanho para nossa mesa de jogo.");
+        Thread.sleep(500);
         System.out.println();
 
-        while(true){
-            while(true){
+        while (true) {
+            while (true) {
                 System.out.printf("Insira uma quantidade de fileiras: ");
-                try{
+                try {
                     fileiras = Integer.parseInt(TECLADO.nextLine());
                     break;
                 }catch(NumberFormatException e){
                     Thread.sleep(100);
+                    mudarCor(1);
                     System.out.println("\nEntrada inválida. Números, por favor.\n");
+                    mudarCor(COR_PADRAO);
                     Thread.sleep(600);
                 }
             }
 
             System.out.println();
 
-            while(true){
+            while (true) {
                 System.out.printf("Insira uma quantidade de colunas: ");
-                try{
+                try {
                     colunas = Integer.parseInt(TECLADO.nextLine());
                     break;
                 }catch(NumberFormatException e){
                     Thread.sleep(100);
+                    mudarCor(1);
                     System.out.println("\nEntrada inválida. Números, por favor.\n");
+                    mudarCor(COR_PADRAO);
                     Thread.sleep(600);
                 }
             }
 
             if((colunas*fileiras)%2==0  &&  fileiras>0  &&  colunas>0){
                 break;
-            }else{
-                // Se tiver número ímpar de casas, nem todas as Cartas terão seu par correspondente
-                System.out.printf("\nAs peças que seriam utilizadas para criar um formato de %d:%d, serão de quantidade ÍMPAR (nem todas as Cartas terão um par correspondente) ou um formato de tamanho inválido foi inserido (zero ou negativo).\nInsira outro formato.\n", fileiras, colunas);
+            } else {
+                // Se tiver número ímpar de casas, nem todas as Cartas terão seu par
+                // correspondente
+                System.out.printf(
+                        "\nAs peças que seriam utilizadas para criar um formato de %d:%d, serão de quantidade ÍMPAR (nem todas as Cartas terão um par correspondente) ou um formato de tamanho inválido foi inserido (zero ou negativo).\nInsira outro formato.\n",
+                        fileiras, colunas);
                 Thread.sleep(2000);
             }
         }
@@ -1110,9 +1143,11 @@ public class BrincandoComTCA{
         List<String> linhas;
         try{
             linhas = Files.readAllLines(Paths.get("dicionario.txt")); // Carrega arquivo de palavras
-            linhas.get(listaPalavras.length-1); // Quick-check para checar a integridade(mínima, mesmo que parcial) do arquivo.  (se não possui o mínimo de linhas necessário, problema.)
-        }catch(IOException e){
-            System.out.println("Arquivo de dicionário não encontrado ou muito pequeno, por favor, reinstale o jogo ou crie um dicionário.");
+            linhas.get(listaPalavras.length - 1); // Quick-check para checar a integridade(mínima, mesmo que parcial) do
+                                                  // arquivo. (se não possui o mínimo de linhas necessário, problema.)
+        } catch (IOException e) {
+            System.out.println(
+                    "Arquivo de dicionário não encontrado ou muito pequeno, por favor, reinstale o jogo ou crie um dicionário.");
             return;
         }
 
@@ -1160,24 +1195,28 @@ public class BrincandoComTCA{
 		// Mas... Single Player ou Multi Player?...
 
 
-		int escolhaSPMP; // (SP = Single Player, MP = Multi Player)
-		while(true){
-            while(true){
+        int escolhaSPMP; // (SP = Single Player, MP = Multi Player)
+        while (true) {
+            while (true) {
                 System.out.printf("\nQuer jogar single-player ou multi-player?\n1. Single-Player\n2. Multi-Player.\n");
-                try{
+                try {
                     escolhaSPMP = Integer.parseInt(TECLADO.nextLine());
                     break;
                 }catch(NumberFormatException e){
                     Thread.sleep(700);
+                    mudarCor(1);
                     System.out.println("\nEntrada inválida. Números, por favor.");
+                    mudarCor(COR_PADRAO);
                     Thread.sleep(1000);
                 }
             }
 
-			if(escolhaSPMP > 2 || escolhaSPMP < 1) System.out.println("\nSua resposta precisa ser '1' ou '2'!");
-			else break;
-			Thread.sleep(300);
-		}
+            if (escolhaSPMP > 2 || escolhaSPMP < 1)
+                System.out.println("\nSua resposta precisa ser '1' ou '2'!");
+            else
+                break;
+            Thread.sleep(300);
+        }
 
 		switch(escolhaSPMP){
 		case(1):
@@ -1192,4 +1231,5 @@ public class BrincandoComTCA{
 		}
 	}
 
+}
 }
