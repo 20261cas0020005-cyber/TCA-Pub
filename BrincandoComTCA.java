@@ -91,6 +91,7 @@ public class BrincandoComTCA {
     }
 
     // Métodos do Ló
+
     public static int pegarNumeroAleatorio(int min, int max) {
         return (int) (Math.random() * (max - min + 1)) + min;
     }
@@ -98,6 +99,33 @@ public class BrincandoComTCA {
     public static void gotoXY(int linha, int coluna) {
         char escCode = 0x1B;
         System.out.print(String.format("%c[%d;%df", escCode, linha, coluna));
+    }
+
+    public static final int PRETO = 0;
+    public static final int VERMELHO = 1;
+    public static final int VERDE = 2;
+    public static final int AMARELO = 3;
+    public static final int AZUL = 4;
+    public static final int MAGENTA = 5;
+    public static final int CIANO = 6;
+    public static final int CINZA = 7;
+    public static final int BRANCO = 15;
+    public static final int COR_PADRAO = -1; // a cor original do terminal
+
+    public static void mudarCor(int cor) {
+        if (cor >= 0 && cor <= 255) {
+            System.out.print("\033[38;5;" + cor + "m");
+        } else {
+            System.out.print("\033[39m"); // cor padrão do terminal
+        }
+    }
+
+    public static void mudarCorFundo(int cor) {
+        if (cor >= 0 && cor <= 255) {
+            System.out.print("\033[48;5;" + cor + "m");
+        } else {
+            System.out.print("\033[49m"); // cor padrão do terminal
+        }
     }
 
     public static void jogadorGotoXY(Jogador jogador, int linha, int coluna) {
@@ -831,8 +859,9 @@ public class BrincandoComTCA {
         }
 
         limparTela();
-
-       telinhafim();
+        mudarCor(2);
+        telinhafim();
+        mudarCor(COR_PADRAO);
         System.out.printf("Sua pontuação: " + pontuacao + ".\n");
 
     }
@@ -1168,7 +1197,7 @@ public class BrincandoComTCA {
 
             // ToDo: Melhorar final de partida(Ascii, melhor jogador da partida, som de
             // vitória)
-            
+
             System.out.printf("Sua pontuação: " + pontuacaoServer + ".\n");
             for (Jogador jogador : jogadores) {
                 jogador.out.printf("Sua pontuação: " + jogador.points + ".\n");
@@ -1226,7 +1255,11 @@ public class BrincandoComTCA {
          */
 
         // Tela de start/bem-vindo
+
+        mudarCor(3);
         telaInicial();
+        mudarCor(COR_PADRAO);
+
         System.out.println();
         TECLADO.nextLine();
 
