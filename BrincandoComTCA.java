@@ -317,7 +317,7 @@ public class BrincandoComTCA {
         return false;
     }
 
-    public static boolean descobrirNomeExiste(String name) {//para ponhar o nome quando é multiplayer
+    public static boolean descobrirNomeExiste(String name) {// para ponhar o nome quando é multiplayer
         if (name.equals("SERVER"))
             return true; // Aqui NÃO pode falhar, melhor ser redundante mesmo.
 
@@ -863,7 +863,6 @@ public class BrincandoComTCA {
         telinhafim();
         mudarCor(COR_PADRAO);
         System.out.printf("Sua pontuação: " + pontuacao + ".\n");
-        
 
     }
 
@@ -1199,8 +1198,8 @@ public class BrincandoComTCA {
             jogadores.sort(Comparator.comparingInt((Jogador j) -> j.points).reversed());
 
             int place = 1;
-            for(Jogador jogadorP : jogadores){
-                for(Jogador jogador : jogadores){
+            for (Jogador jogadorP : jogadores) {
+                for (Jogador jogador : jogadores) {
                     jogador.out.printf("%dst Place (%d points): %s\n", place, jogadorP.points, jogadorP.name);
                 }
                 place++;
@@ -1281,6 +1280,13 @@ public class BrincandoComTCA {
                 mudarCor(COR_PADRAO);
                 try {
                     fileiras = Integer.parseInt(TECLADO.nextLine());
+                    if (fileiras > 10) {
+                        mudarCor(1);
+                        System.out.println("Tamanho incompativel, digite novamente MAX 10");
+                        mudarCor(COR_PADRAO);
+                        Thread.sleep(400);
+                        continue;
+                    }
                     break;
                 } catch (NumberFormatException e) {
                     Thread.sleep(100);
@@ -1291,14 +1297,22 @@ public class BrincandoComTCA {
                 }
             }
 
-            System.out.println();
+            
 
             while (true) {
                 mudarCor(15);
                 System.out.printf("Insira uma quantidade de colunas: ");
                 mudarCor(COR_PADRAO);
+
                 try {
                     colunas = Integer.parseInt(TECLADO.nextLine());
+                    if (colunas > 10) {
+                         mudarCor(1);
+                        System.out.println("Tamanho incompativel, digite novamente MAX 10");
+                         mudarCor(COR_PADRAO);
+                        Thread.sleep(400);// tempe em milisegundo
+                        continue;
+                    }
                     break;
                 } catch (NumberFormatException e) {
                     Thread.sleep(100);
@@ -1321,6 +1335,7 @@ public class BrincandoComTCA {
                 mudarCor(COR_PADRAO);
                 System.out.println();
                 Thread.sleep(2000);
+               
             }
         }
 
@@ -1412,15 +1427,15 @@ public class BrincandoComTCA {
                 }
             }
 
-            if(escolhaSPMP > 2 || escolhaSPMP < 1){
+            if (escolhaSPMP > 2 || escolhaSPMP < 1) {
                 mudarCor(1);
                 System.out.println("\nSua resposta precisa ser '1' ou '2'!");
                 mudarCor(COR_PADRAO);
-            }else{
+            } else {
                 break;
             }
             Thread.sleep(300);
-        
+
         }
 
         switch (escolhaSPMP) {
