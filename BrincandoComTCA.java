@@ -100,7 +100,7 @@ public class BrincandoComTCA {
         char escCode = 0x1B;
         System.out.print(String.format("%c[%d;%df", escCode, linha, coluna));
     }
-
+    //peguei do ló
     public static final int PRETO = 0;
     public static final int VERMELHO = 1;
     public static final int VERDE = 2;
@@ -185,28 +185,17 @@ public class BrincandoComTCA {
 
         // Indices
         System.out.printf("  ");
+
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            System.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // i
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // (caso
-                                                                                                                    // "maiorPalavraCaracteres/2"
-                                                                                                                    // dê
-                                                                                                                    // número
-                                                                                                                    // quebrado,
-                                                                                                                    // adicionar
-                                                                                                                    // 1
-                                                                                                                    // espaço
-                                                                                                                    // no
-                                                                                                                    // final)
+            System.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1) + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output: (maiorPalavraCaracteres/2) i (maiorPalavraCaracteres/2) (caso "maiorPalavraCaracteres/2" dê número quebrado, adicionar 1 espaço no final)
         }
+
+
         System.out.println();
         cursorEstaNaFileira++;
 
         for (int i = 0; i < tabuleiro.length; i++) {
-            System.out.printf("%d ", i + 1); // Index
+            System.out.printf("%3d ", i + 1); // Index
             for (int j = 0; j < tabuleiro[0].length; j++) {
                 if (tabuleiro[i][j].virado) {
                     System.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
@@ -249,7 +238,7 @@ public class BrincandoComTCA {
         cursorEstaNaFileira++;
 
         for (int i = 0; i < tabuleiro.length; i++) {
-            System.out.printf("%d ", i + 1); // Index
+            System.out.printf("%3d ", i + 1); // Index
             for (int j = 0; j < tabuleiro[0].length; j++) {
                 System.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
             }
@@ -1311,7 +1300,8 @@ public class BrincandoComTCA {
                         System.out.println("Tamanho incompativel, digite novamente MAX 10");
                          mudarCor(COR_PADRAO);
                         Thread.sleep(400);// tempe em milisegundo
-                        continue;
+                
+        continue;
                     }
                     break;
                 } catch (NumberFormatException e) {
