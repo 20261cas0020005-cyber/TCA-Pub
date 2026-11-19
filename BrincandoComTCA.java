@@ -184,29 +184,19 @@ public class BrincandoComTCA {
             maiorPalavraCaracteres = pegarQntCaracteresMaiorPalavra(tabuleiro);
 
         // Indices
-        System.out.printf("  ");
+        System.out.printf("   ");
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            System.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // i
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // (caso
-                                                                                                                    // "maiorPalavraCaracteres/2"
-                                                                                                                    // dê
-                                                                                                                    // número
-                                                                                                                    // quebrado,
-                                                                                                                    // adicionar
-                                                                                                                    // 1
-                                                                                                                    // espaço
-                                                                                                                    // no
-                                                                                                                    // final)
+            System.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
++ " ".repeat(maiorPalavraCaracteres / 2));
+            if(maiorPalavraCaracteres%2!=0){
+                System.out.printf(" ");
+            }
         }
         System.out.println();
         cursorEstaNaFileira++;
 
         for (int i = 0; i < tabuleiro.length; i++) {
-            System.out.printf("%d ", i + 1); // Index
+            System.out.printf("%3d ", i + 1); // Index
             for (int j = 0; j < tabuleiro[0].length; j++) {
                 if (tabuleiro[i][j].virado) {
                     System.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
@@ -227,29 +217,19 @@ public class BrincandoComTCA {
             maiorPalavraCaracteres = pegarQntCaracteresMaiorPalavra(tabuleiro);
 
         // Indices
-        System.out.printf("  ");
+        System.out.printf("   ");
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            System.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // i
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // (caso
-                                                                                                                    // "maiorPalavraCaracteres/2"
-                                                                                                                    // dê
-                                                                                                                    // número
-                                                                                                                    // quebrado,
-                                                                                                                    // adicionar
-                                                                                                                    // 1
-                                                                                                                    // espaço
-                                                                                                                    // no
-                                                                                                                    // final)
+            System.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
++ " ".repeat(maiorPalavraCaracteres / 2));
+            if(maiorPalavraCaracteres%2!=0){
+                System.out.printf(" ");
+            }
         }
         System.out.println();
         cursorEstaNaFileira++;
 
         for (int i = 0; i < tabuleiro.length; i++) {
-            System.out.printf("%d ", i + 1); // Index
+            System.out.printf("%3d ", i + 1); // Index
             for (int j = 0; j < tabuleiro[0].length; j++) {
                 System.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
             }
@@ -265,23 +245,13 @@ public class BrincandoComTCA {
             maiorPalavraCaracteres = pegarQntCaracteresMaiorPalavra(matriz);
 
         // Indices
-        System.out.printf("  ");
+        System.out.printf("   ");
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            System.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // i
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // (caso
-                                                                                                                    // "maiorPalavraCaracteres/2"
-                                                                                                                    // dê
-                                                                                                                    // número
-                                                                                                                    // quebrado,
-                                                                                                                    // adicionar
-                                                                                                                    // 1
-                                                                                                                    // espaço
-                                                                                                                    // no
-                                                                                                                    // final)
+            System.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
++ " ".repeat(maiorPalavraCaracteres / 2));
+            if(maiorPalavraCaracteres%2!=0){
+                System.out.printf(" ");
+            }
         }
         System.out.println();
         cursorEstaNaFileira++;
@@ -352,21 +322,11 @@ public class BrincandoComTCA {
             // Indices
             jogador.out.printf("  ");
             for (int i = 0; i < tabuleiro[0].length; i++) {
-                jogador.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                        + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
-                                                                                                                        // (maiorPalavraCaracteres/2)
-                                                                                                                        // i
-                                                                                                                        // (maiorPalavraCaracteres/2)
-                                                                                                                        // (caso
-                                                                                                                        // "maiorPalavraCaracteres/2"
-                                                                                                                        // dê
-                                                                                                                        // número
-                                                                                                                        // quebrado,
-                                                                                                                        // adicionar
-                                                                                                                        // 1
-                                                                                                                        // espaço
-                                                                                                                        // no
-                                                                                                                        // final)
+                jogador.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
++ " ".repeat(maiorPalavraCaracteres / 2));
+            if(maiorPalavraCaracteres/2 %1 > 0){
+                jogador.out.printf(" ");
+            }
             }
             jogador.out.println();
 
@@ -398,21 +358,11 @@ public class BrincandoComTCA {
         // Indices
         jogador.out.printf("  ");
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            jogador.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // i
-                                                                                                                    // (maiorPalavraCaracteres/2)
-                                                                                                                    // (caso
-                                                                                                                    // "maiorPalavraCaracteres/2"
-                                                                                                                    // dê
-                                                                                                                    // número
-                                                                                                                    // quebrado,
-                                                                                                                    // adicionar
-                                                                                                                    // 1
-                                                                                                                    // espaço
-                                                                                                                    // no
-                                                                                                                    // final)
+            jogador.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
++ " ".repeat(maiorPalavraCaracteres / 2));
+            if(maiorPalavraCaracteres/2 %1 > 0){
+                jogador.out.printf(" ");
+            }
         }
         jogador.out.println();
 
@@ -443,22 +393,13 @@ public class BrincandoComTCA {
             // Indices
             jogador.out.printf("  ");
             for (int i = 0; i < tabuleiro[0].length; i++) {
-                jogador.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                        + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
-                                                                                                                        // (maiorPalavraCaracteres/2)
-                                                                                                                        // i
-                                                                                                                        // (maiorPalavraCaracteres/2)
-                                                                                                                        // (caso
-                                                                                                                        // "maiorPalavraCaracteres/2"
-                                                                                                                        // dê
-                                                                                                                        // número
-                                                                                                                        // quebrado,
-                                                                                                                        // adicionar
-                                                                                                                        // 1
-                                                                                                                        // espaço
-                                                                                                                        // no
-                                                                                                                        // final)
+                jogador.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
++ " ".repeat(maiorPalavraCaracteres / 2));
+            if(maiorPalavraCaracteres/2 %1 > 0){
+                jogador.out.printf(" ");
             }
+            }
+
             jogador.out.println();
 
             for (int i = 0; i < tabuleiro.length; i++) {
