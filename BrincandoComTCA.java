@@ -90,6 +90,46 @@ public class BrincandoComTCA {
                 "╚══════╝╚═╝  ╚═══╝╚═════╝     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝");
     }
 
+    static long inicioCronometro = 0;
+
+    // Começa (ou recomeça) a contar o tempo do zero.
+    public static void iniciarCronometro() {
+        inicioCronometro = System.currentTimeMillis();
+    }
+
+    // Retorna quantos segundos passaram desde o iniciarCronometro().
+    // O valor tem casas decimais: 1.5 quer dizer um segundo e meio.
+    public static double segundosPassados() {
+        long agora = System.currentTimeMillis();
+        return (agora - inicioCronometro) / 1000.0;
+    }
+
+    
+    // Pausa o programa por um tempo, em milissegundos (1000 = 1 segundo).
+    public static void esperar(int milissegundos) {
+        try {
+            Thread.sleep(milissegundos);
+        } catch (InterruptedException e) {
+            // não faz nada: se a espera for interrompida, o programa só continua
+            System.out.println(inicioCronometro);
+        }
+    }
+
+    public static void imprimirTempoDeJogo(){
+        int segundos = (int) segundosPassados();
+        String tempo = "";
+
+        if(segundos>= 60*60){
+            tempo += Math.floor(segundos/(60*60) *10)/10 + " horas";
+        }else if(segundos>=60){
+            tempo += Math.floor(segundos/60 *10)/10 + " minutos";
+        }else{
+            tempo += segundos + " segundos";
+        }
+
+        System.out.printf("Tempo de jogo: " + tempo + ".\n");
+    }
+
     // Métodos do Ló
 
     public static int pegarNumeroAleatorio(int min, int max) {
@@ -101,6 +141,7 @@ public class BrincandoComTCA {
         System.out.print(String.format("%c[%d;%df", escCode, linha, coluna));
     }
 
+    // peguei do ló
     public static final int PRETO = 0;
     public static final int VERMELHO = 1;
     public static final int VERDE = 2;
@@ -192,6 +233,7 @@ public class BrincandoComTCA {
                 System.out.printf(" ");
             }
         }
+
         System.out.println();
         cursorEstaNaFileira++;
 
@@ -287,7 +329,7 @@ public class BrincandoComTCA {
         return false;
     }
 
-    public static boolean descobrirNomeExiste(String name) {//para ponhar o nome quando é multiplayer
+    public static boolean descobrirNomeExiste(String name) {// para ponhar o nome quando é multiplayer
         if (name.equals("SERVER"))
             return true; // Aqui NÃO pode falhar, melhor ser redundante mesmo.
 
@@ -331,7 +373,7 @@ public class BrincandoComTCA {
             jogador.out.println();
 
             for (int i = 0; i < tabuleiro.length; i++) {
-                jogador.out.printf("%d ", i + 1); // Index
+                jogador.out.printf("%2d ", i + 1); // Index
                 for (int j = 0; j < tabuleiro[0].length; j++) {
 
                     if (tabuleiro[i][j].virado) {
@@ -367,7 +409,7 @@ public class BrincandoComTCA {
         jogador.out.println();
 
         for (int i = 0; i < tabuleiro.length; i++) {
-            jogador.out.printf("%d ", i + 1); // Index
+            jogador.out.printf("%2d ", i + 1); // Index
             for (int j = 0; j < tabuleiro[0].length; j++) {
 
                 if (tabuleiro[i][j].virado) {
@@ -403,7 +445,7 @@ public class BrincandoComTCA {
             jogador.out.println();
 
             for (int i = 0; i < tabuleiro.length; i++) {
-                jogador.out.printf("%d ", i + 1); // Index
+                jogador.out.printf("%2d ", i + 1); // Index
                 for (int j = 0; j < tabuleiro[0].length; j++) {
                     jogador.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
                 }
@@ -485,9 +527,7 @@ public class BrincandoComTCA {
         for (int i = 0; i <= cursorEstaNaFileira + 4; i++) { // +4 por causa de uns inputs perdidos aqui e ali
             gotoXY(i, 0);
 
-            for (int j = 0; j < (maiorPalavraCaracteres + 1) * tabuleiro[0].length * 2; j++) {
-                System.out.printf(" ");
-            }
+            System.out.printf(" ".repeat((maiorPalavraCaracteres + 1) * tabuleiro[0].length + 3)); // +3 porque: pula indice
         }
         cursorEstaNaFileira = 1;
         System.out.printf("\033[H\033[2J");
@@ -525,42 +565,37 @@ public class BrincandoComTCA {
         imprimirEEnviarParaTodosTabuleiroAtual();
     }
 
-    public static void mostrarCartaMultiP(int[] cartaCoord) throws IOException, InterruptedException {
+    public static void mostrarCartaMultiP(int x, int y) throws IOException, InterruptedException {
         Thread.sleep(400);
-        if (cartaCoord == null)
+        if (x < 0 || y < 0)
             return;
 
-        int objetivo = cartaCoord[1] + 1; // +1 porque: A primeira linha é o índice(primeira linha indica a coluna para
-                                          // o jogador)
+        int objetivo = y + 1; // +1 porque: A primeira linha é o índice(primeira linha indica a coluna para o
+                              // jogador)
 
-        // ToDo: Índice pode ocupar mais de 2 posições
-        gotoXY(objetivo, (cartaCoord[0] - 1) * (maiorPalavraCaracteres + 1) + 3); // +3 porque: pula o Índice, que ocupa
-                                                                                  // 2 posições || (cartaCoord[0]-1)
-                                                                                  // porque: Se eu quero sobreescrever a
-                                                                                  // quinta carta, eu vou até a quarta e
-                                                                                  // começo a imprimir a quinta carta,
-                                                                                  // sobreescrevendo-a ||
-                                                                                  // *(maiorPalavraCaracteres+1) porque:
-                                                                                  // avançar os caracteres da carta para
-                                                                                  // o lado, +1 por causa dos espaços
-                                                                                  // entre cada palavra
-        allJogadoresGotoXY(objetivo, (cartaCoord[0] - 1) * (maiorPalavraCaracteres + 1) + 3); // O mesmo para os
-                                                                                              // jogadores LAN
+        gotoXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4); // +4 porque: pula o Índice, que ocupa 3 posições
+                                                                      // || (cartaCoord[0]-1) porque: Se eu quero
+                                                                      // sobreescrever a quinta carta, eu vou até a
+                                                                      // quarta e começo a imprimir a quinta carta,
+                                                                      // sobreescrevendo-a ||
+                                                                      // *(maiorPalavraCaracteres+1) porque: avançar os
+                                                                      // caracteres da carta para o lado, +1 por causa
+                                                                      // dos espaços entre cada palavra
+        allJogadoresGotoXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4); // O mesmo para os jogadores LAN
         // Cursor no começo da palavra
 
         // Primeiro, tira os "_"(underlines) e sobreescreve para espaços vazios
-        for (int j = 0; j < maiorPalavraCaracteres; j++) {
-            System.out.printf(" ");
-            sendAllConnectedPlayers(" ", null, null);
-        }
+        System.out.printf(" ".repeat(maiorPalavraCaracteres));
+        sendAllConnectedPlayers(" ".repeat(maiorPalavraCaracteres), null, null);
+
         // Depois, volta para o começo da palavra
-        gotoXY(objetivo, (cartaCoord[0] - 1) * (maiorPalavraCaracteres + 1) + 3);
-        allJogadoresGotoXY(objetivo, (cartaCoord[0] - 1) * (maiorPalavraCaracteres + 1) + 3);
+        gotoXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4);
+        allJogadoresGotoXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4);
 
         // Depois, imprime palavra normalmente
         Thread.sleep(400);
-        System.out.printf(tabuleiro[cartaCoord[1] - 1][cartaCoord[0] - 1].cartaNome);
-        sendAllConnectedPlayers(tabuleiro[cartaCoord[1] - 1][cartaCoord[0] - 1].cartaNome, null, null);
+        System.out.printf(tabuleiro[y - 1][x - 1].cartaNome);
+        sendAllConnectedPlayers(tabuleiro[y - 1][x - 1].cartaNome, null, null);
 
         // Volta para o fim do tabuleiro(coluna do "cursorEstaNaFileira")
         gotoXY(cursorEstaNaFileira, 0);
@@ -568,38 +603,33 @@ public class BrincandoComTCA {
 
     }
 
-    public static void mostrarCartaSingleP(int[] cartaCoord) throws IOException, InterruptedException {
+    public static void mostrarCartaSingleP(int x, int y) throws IOException, InterruptedException {
         Thread.sleep(400);
-        if (cartaCoord == null)
+        if (x < 0 || y < 0)
             return;
 
-        int objetivo = cartaCoord[1] + 1; // +1 porque: A primeira linha é o índice(primeira linha indica a coluna para
-                                          // o jogador)
+        int objetivo = y + 1; // +1 porque: A primeira linha é o índice(primeira linha indica a coluna para
+                              // o jogador)
 
-        // ToDo: Índice pode ocupar mais de 2 posições
-        gotoXY(objetivo, (cartaCoord[0] - 1) * (maiorPalavraCaracteres + 1) + 3); // +3 porque: pula o Índice, que ocupa
-                                                                                  // 2 posições || (cartaCoord[0]-1)
-                                                                                  // porque: Se eu quero sobreescrever a
-                                                                                  // quinta carta, eu vou até a quarta e
-                                                                                  // começo a imprimir a quinta carta,
-                                                                                  // sobreescrevendo-a ||
-                                                                                  // *(maiorPalavraCaracteres+1) porque:
-                                                                                  // avançar os caracteres da carta para
-                                                                                  // o lado, +1 por causa dos espaços
-                                                                                  // entre cada palavra
+        gotoXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4); // +4 porque: pula o Índice, que ocupa 3 posições
+                                                                      // || (cartaCoord[0]-1) porque: Se eu quero
+                                                                      // sobreescrever a quinta carta, eu vou até a
+                                                                      // quarta e começo a imprimir a quinta carta,
+                                                                      // sobreescrevendo-a ||
+                                                                      // *(maiorPalavraCaracteres+1) porque: avançar os
+                                                                      // caracteres da carta para o lado, +1 por causa
+                                                                      // dos espaços entre cada palavra
         // Cursor no começo da palavra
 
         // Primeiro, tira os "_"(underlines) e sobreescreve para espaços vazios
-        for (int j = 0; j < maiorPalavraCaracteres; j++) {
-            System.out.printf(" ");
-        }
+        System.out.printf(" ".repeat(maiorPalavraCaracteres));
 
         // Depois, volta para o começo da palavra
-        gotoXY(objetivo, (cartaCoord[0] - 1) * (maiorPalavraCaracteres + 1) + 3);
+        gotoXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4);
 
         // Depois, imprime palavra normalmente
         Thread.sleep(400);
-        System.out.printf(tabuleiro[cartaCoord[1] - 1][cartaCoord[0] - 1].cartaNome);
+        System.out.printf(tabuleiro[y - 1][x - 1].cartaNome);
 
         // Volta para o fim do tabuleiro(coluna do "cursorEstaNaFileira")
         gotoXY(cursorEstaNaFileira, 0);
@@ -715,82 +745,131 @@ public class BrincandoComTCA {
         atualizarTabuleiroServer();
 
         partidaRunning = true;
+        iniciarCronometro();
+
         while (partidaRunning) {
             String[] inputsStr = new String[2];
-            int[] cartaCoord1 = new int[2], cartaCoord2 = new int[2];
-            System.out.printf("Escolha coordenadas X e coordenadas Y para a primeira carta! Formato: X Y\n");
-            Thread.sleep(400);
+            int[] cartasCoord = new int[4];
+            int cartasValidas = 0;
 
-            while (true) {
-                while (true) {
-                    inputsStr[0] = TECLADO.next();
-                    inputsStr[1] = TECLADO.next();
-                    try {
-                        cartaCoord1[0] = Integer.parseInt(inputsStr[0]);
-                        cartaCoord1[1] = Integer.parseInt(inputsStr[1]);
-                        break;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Formato incorreto! Formato(números naturais): X Y");
-                        sendAllConnectedPlayers("0x1B[%20;%20f", null, null);
-                        cursorEstaNaFileira++;
-                    }
-                }
+            while (cartasValidas < 1) {
+                System.out.printf("Sua vez! Escolha coordenadas X e coordenadas Y! Formato: X Y ou X1 Y1 X2 Y2\n");
+                cursorEstaNaFileira++;
+                Thread.sleep(400);
 
-                atualizarTabuleiroServer();
-                if (cartaCoord1[0] > tabuleiro[0].length || cartaCoord1[1] > tabuleiro.length || cartaCoord1[0] < 0
-                        || cartaCoord1[1] < 0) {
-                    System.out.println("Carta fora de alcance.");
+                inputsStr = TECLADO.nextLine().trim().split("\\s+");
+
+                if (inputsStr.length < 2 || inputsStr.length > 4) {
+                    System.out.printf("Coordenadas inseridas inválidas: %d entradas. Esperado: 2 ou 4 entradas.\n",
+                            inputsStr.length);
                     cursorEstaNaFileira++;
+                    Thread.sleep(400);
                     continue;
                 }
-                if (tabuleiro[cartaCoord1[1] - 1][cartaCoord1[0] - 1].virado) {
-                    System.out.println("Carta já virada! Escolha outra.");
+
+                try {
+                    cartasCoord[0] = Integer.parseInt(inputsStr[0]);
+                    cartasCoord[1] = Integer.parseInt(inputsStr[1]);
+
+                    if (cartasCoord[0] > tabuleiro[0].length || cartasCoord[1] > tabuleiro.length // Carta maior que
+                                                                                                  // tabuleiro
+                            || cartasCoord[0] <= 0 || cartasCoord[1] <= 0) { // Valor negativo
+                        System.out.println("Carta fora de alcance.");
+                        cursorEstaNaFileira++;
+                        Thread.sleep(400);
+                        continue;
+                    }
+                    if (tabuleiro[cartasCoord[1] - 1][cartasCoord[0] - 1].virado) { // Carta já foi virada
+                        System.out.println("Carta já virada! Escolha outra.");
+                        Thread.sleep(400);
+                        cursorEstaNaFileira++;
+                        continue;
+                    }
+
+                    cartasValidas++;
+                } catch (NumberFormatException e) {
+                    System.out.println("Formato incorreto! Formato esperado(números naturais): X Y");
                     cursorEstaNaFileira++;
-                } else
-                    break;
+                    Thread.sleep(400);
+                    continue;
+                }
+
+                if (inputsStr.length == 4) {
+                    try {
+                        cartasCoord[2] = Integer.parseInt(inputsStr[2]);
+                        cartasCoord[3] = Integer.parseInt(inputsStr[3]);
+
+                        if (cartasCoord[2] <= 0 || cartasCoord[3] <= 0 // Valor negativo
+                                || (cartasCoord[0] == cartasCoord[2]) && (cartasCoord[1] == cartasCoord[3]) // Carta
+                                                                                                            // repetida
+                                || tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].virado) { // Carta já virada
+
+                            continue; // Deixa passar (vai perguntar a segunda carta depois)
+                        }
+
+                        cartasValidas++;
+                    } catch (NumberFormatException ignore) {
+                    }
+                }
             }
-            System.out.printf("Bom! Agora, a segunda carta!\n");
-            while (true) {
-                while (true) {
-                    inputsStr[0] = TECLADO.next();
-                    inputsStr[1] = TECLADO.next();
-                    try {
-                        cartaCoord2[0] = Integer.parseInt(inputsStr[0]);
-                        cartaCoord2[1] = Integer.parseInt(inputsStr[1]);
-                        break;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Formato incorreto! Formato(números naturais): X Y");
-                        cursorEstaNaFileira++;
-                    }
-                }
 
-                atualizarTabuleiroServer();
-                if (cartaCoord2[0] > tabuleiro[0].length || cartaCoord2[1] > tabuleiro.length || cartaCoord2[0] < 0
-                        || cartaCoord2[1] < 0) {
-                    System.out.println("Carta fora de alcance.");
+            while (cartasValidas < 2) {
+
+                System.out.printf("Bom! Agora, a segunda carta!\n");
+                cursorEstaNaFileira++;
+
+                inputsStr = TECLADO.nextLine().trim().split("\\s+");
+
+                if (inputsStr.length < 2) {
+                    System.out.printf("Coordenadas inseridas inválidas: %d entradas. Esperado: 2 entradas.\n",
+                            inputsStr.length);
                     cursorEstaNaFileira++;
+                    Thread.sleep(400);
                     continue;
                 }
-                if (tabuleiro[cartaCoord2[1] - 1][cartaCoord2[0] - 1].virado
-                        || (cartaCoord1[0] == cartaCoord2[0]) && (cartaCoord1[1] == cartaCoord2[1])) {
-                    System.out.println("Carta já virada! Escolha outra.");
+
+                try {
+                    cartasCoord[2] = Integer.parseInt(inputsStr[0]);
+                    cartasCoord[3] = Integer.parseInt(inputsStr[1]);
+
+                    if (cartasCoord[2] > tabuleiro[0].length || cartasCoord[3] > tabuleiro.length // Carta fora de
+                                                                                                  // alcance
+                            || cartasCoord[2] <= 0 || cartasCoord[3] <= 0) { // Valor negativo
+                        System.out.println("Carta fora de alcance.");
+                        cursorEstaNaFileira++;
+                        Thread.sleep(400);
+                        continue;
+                    }
+                    if (tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].virado // Carta já virada
+                            || (cartasCoord[0] == cartasCoord[2]) && (cartasCoord[1] == cartasCoord[3])) { // Carta
+                                                                                                           // igual à
+                                                                                                           // primeira
+                                                                                                           // carta
+                        System.out.println("Carta já virada! Escolha outra.");
+                        Thread.sleep(400);
+                        cursorEstaNaFileira++;
+                        continue;
+                    }
+
+                    cartasValidas++;
+                } catch (NumberFormatException e) {
+                    System.out.println("Formato incorreto! Formato esperado(números naturais): X Y");
                     cursorEstaNaFileira++;
-                } else
-                    break;
+                }
             }
             // fim do input
 
             atualizarTabuleiroServer();
 
-            mostrarCartaSingleP(cartaCoord1);
-            mostrarCartaSingleP(cartaCoord2);
+            mostrarCartaSingleP(cartasCoord[0], cartasCoord[1]);
+            mostrarCartaSingleP(cartasCoord[2], cartasCoord[3]);
 
             Thread.sleep(400);
             // Se virou cartas iguais
-            if (tabuleiro[cartaCoord1[1] - 1][cartaCoord1[0]
-                    - 1].cartaNome == tabuleiro[cartaCoord2[1] - 1][cartaCoord2[0] - 1].cartaNome) {
-                tabuleiro[cartaCoord1[1] - 1][cartaCoord1[0] - 1].virado = true;
-                tabuleiro[cartaCoord2[1] - 1][cartaCoord2[0] - 1].virado = true;
+            if (tabuleiro[cartasCoord[1] - 1][cartasCoord[0]
+                    - 1].cartaNome == tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].cartaNome) {
+                tabuleiro[cartasCoord[1] - 1][cartasCoord[0] - 1].virado = true;
+                tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].virado = true;
                 pontuacao += 100;
             }
 
@@ -803,8 +882,8 @@ public class BrincandoComTCA {
         mudarCor(3);
         telinhafim();
         mudarCor(COR_PADRAO);
+        imprimirTempoDeJogo();
         System.out.printf("Sua pontuação: " + pontuacao + ".\n");
-        
 
     }
 
@@ -870,10 +949,7 @@ public class BrincandoComTCA {
             }).start();
 
             // Feedback ao usuário servidor
-            String meuIPPrivado = java.util.Collections.list(java.net.NetworkInterface.getNetworkInterfaces()).stream()
-                    .flatMap(i -> java.util.Collections.list(i.getInetAddresses()).stream())
-                    .filter(a -> a instanceof java.net.Inet4Address && a.isSiteLocalAddress())
-                    .map(a -> a.getHostAddress()).findFirst().orElse("Falha ao procurar IP.");
+            String meuIPPrivado = Inet4Address.getLocalHost().getHostAddress();
 
             System.out.printf(
                     "\nPartida hospedada em: %s:%s\nPara outros jogadores se conectarem, insiram 'nc %s %s' num terminal.",
@@ -892,6 +968,9 @@ public class BrincandoComTCA {
                     break;
             }
             partidaRunning = true;
+            
+            iniciarCronometro();
+            
 
             // Partida começou
             cursorEstaNaFileira = 1;
@@ -910,12 +989,14 @@ public class BrincandoComTCA {
 
             int vez = 0, vezDo;
             int qntJogadores = jogadores.size() + 1; // +1 por causa do server
-            int[] cartaCoord1 = new int[2];
-            int[] cartaCoord2 = new int[2];
+            int[] cartasCoord = new int[4];
+            int cartasValidas;
             Jogador jogadorNaVez;
-            String[] inputsStr = new String[2];
+            String[] inputsStr;
 
             while (partidaRunning) {
+                inputsStr = new String[2];
+                cartasValidas = 0;
                 vezDo = vez % qntJogadores;
 
                 jogadorNaVez = null;
@@ -943,184 +1024,257 @@ public class BrincandoComTCA {
                     // Print
                     // Resposta ←
 
-                    System.out.printf(
-                            "Sua vez! Escolha coordenadas X e coordenadas Y para a primeira carta! Formato: X Y\n");
-                    Thread.sleep(400);
-                    while (true) {
-                        while (true) {
-                            inputsStr[0] = TECLADO.next();
-                            inputsStr[1] = TECLADO.next();
-                            try {
-                                cartaCoord1[0] = Integer.parseInt(inputsStr[0]);
-                                cartaCoord1[1] = Integer.parseInt(inputsStr[1]);
-                                break;
-                            } catch (NumberFormatException e) {
-                                System.out.println("Formato incorreto! Formato(números naturais): X Y");
-                                cursorEstaNaFileira++;
-                            }
-                        }
+                    while (cartasValidas < 1) {
+                        System.out.printf(
+                                "Sua vez! Escolha coordenadas X e coordenadas Y! Formato: X Y ou X1 Y1 X2 Y2\n");
+                        cursorEstaNaFileira++;
+                        Thread.sleep(400);
 
-                        atualizarTabuleiroServer();
+                        inputsStr = TECLADO.nextLine().trim().split("\\s+");
 
-                        if (cartaCoord1[0] > tabuleiro[0].length || cartaCoord1[1] > tabuleiro.length
-                                || cartaCoord1[0] < 0 || cartaCoord1[1] < 0) {
-                            System.out.println("Carta fora de alcance.");
+                        if (inputsStr.length < 2 || inputsStr.length > 4) {
+                            System.out.printf(
+                                    "Coordenadas inseridas inválidas: %d entradas. Esperado: 2 ou 4 entradas.\n",
+                                    inputsStr.length);
                             cursorEstaNaFileira++;
+                            Thread.sleep(400);
                             continue;
                         }
-                        if (tabuleiro[cartaCoord1[1] - 1][cartaCoord1[0] - 1].virado) {
-                            System.out.println("Carta já virada! Escolha outra.");
+
+                        try {
+                            cartasCoord[0] = Integer.parseInt(inputsStr[0]);
+                            cartasCoord[1] = Integer.parseInt(inputsStr[1]);
+
+                            if (cartasCoord[0] > tabuleiro[0].length || cartasCoord[1] > tabuleiro.length // Carta maior
+                                                                                                          // que
+                                                                                                          // tabuleiro
+                                    || cartasCoord[0] <= 0 || cartasCoord[1] <= 0) { // Valor negativo
+                                System.out.println("Carta fora de alcance.");
+                                cursorEstaNaFileira++;
+                                Thread.sleep(400);
+                                continue;
+                            }
+                            if (tabuleiro[cartasCoord[1] - 1][cartasCoord[0] - 1].virado) { // Carta já foi virada
+                                System.out.println("Carta já virada! Escolha outra.");
+                                Thread.sleep(400);
+                                cursorEstaNaFileira++;
+                                continue;
+                            }
+
+                            cartasValidas++;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Formato incorreto! Formato esperado(números naturais): X Y");
                             cursorEstaNaFileira++;
-                        } else
-                            break;
+                            Thread.sleep(400);
+                            continue;
+                        }
+
+                        if (inputsStr.length == 4) {
+                            try {
+                                cartasCoord[2] = Integer.parseInt(inputsStr[2]);
+                                cartasCoord[3] = Integer.parseInt(inputsStr[3]);
+
+                                if (cartasCoord[2] <= 0 || cartasCoord[3] <= 0 // Valor negativo
+                                        || (cartasCoord[0] == cartasCoord[2]) && (cartasCoord[1] == cartasCoord[3]) // Carta
+                                                                                                                    // repetida
+                                        || tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].virado) { // Carta já
+                                                                                                       // virada
+
+                                    continue; // Deixa passar (vai perguntar a segunda carta depois)
+                                }
+
+                                cartasValidas++;
+                            } catch (NumberFormatException ignore) {
+                            }
+                        }
                     }
 
-                    System.out.printf("Bom! Agora, a segunda carta!\n");
+                    while (cartasValidas < 2) {
 
-                    while (true) {
-                        while (true) {
-                            inputsStr[0] = TECLADO.next();
-                            inputsStr[1] = TECLADO.next();
-                            try {
-                                cartaCoord2[0] = Integer.parseInt(inputsStr[0]);
-                                cartaCoord2[1] = Integer.parseInt(inputsStr[1]);
-                                break;
-                            } catch (NumberFormatException e) {
-                                System.out.println("Formato incorreto! Formato(números naturais): X Y");
-                                cursorEstaNaFileira++;
-                            }
-                        }
-                        atualizarTabuleiroServer();
-                        if (cartaCoord2[0] > tabuleiro[0].length || cartaCoord2[1] > tabuleiro.length
-                                || cartaCoord2[0] < 0 || cartaCoord2[1] < 0) {
-                            System.out.println("Carta fora de alcance.");
+                        System.out.printf("Bom! Agora, a segunda carta!\n");
+                        cursorEstaNaFileira++;
+
+                        inputsStr = TECLADO.nextLine().trim().split("\\s+");
+
+                        if (inputsStr.length < 2) {
+                            System.out.printf("Coordenadas inseridas inválidas: %d entradas. Esperado: 2 entradas.\n",
+                                    inputsStr.length);
                             cursorEstaNaFileira++;
+                            Thread.sleep(400);
                             continue;
                         }
 
-                        if (tabuleiro[cartaCoord2[1] - 1][cartaCoord2[0] - 1].virado
-                                || (cartaCoord1[0] == cartaCoord2[0]) && (cartaCoord1[1] == cartaCoord2[1])) {
-                            System.out.println("Carta já virada! Escolha outra.");
-                            cursorEstaNaFileira++;
-                        } else
-                            break;
+                        try {
+                            cartasCoord[2] = Integer.parseInt(inputsStr[0]);
+                            cartasCoord[3] = Integer.parseInt(inputsStr[1]);
 
+                            if (cartasCoord[2] > tabuleiro[0].length || cartasCoord[3] > tabuleiro.length // Carta fora
+                                                                                                          // de alcance
+                                    || cartasCoord[2] <= 0 || cartasCoord[3] <= 0) { // Valor negativo
+                                System.out.println("Carta fora de alcance.");
+                                cursorEstaNaFileira++;
+                                Thread.sleep(400);
+                                continue;
+                            }
+                            if (tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].virado // Carta já virada
+                                    || (cartasCoord[0] == cartasCoord[2]) && (cartasCoord[1] == cartasCoord[3])) { // Carta
+                                                                                                                   // igual
+                                                                                                                   // à
+                                                                                                                   // primeira
+                                                                                                                   // carta
+                                System.out.println("Carta já virada! Escolha outra.");
+                                Thread.sleep(400);
+                                cursorEstaNaFileira++;
+                                continue;
+                            }
+
+                            cartasValidas++;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Formato incorreto! Formato esperado(números naturais): X Y");
+                            cursorEstaNaFileira++;
+                        }
                     }
                     // fim do input
 
+                    atualizarTabuleiroServer();
                     atualizarTabuleiroJogadores();
 
-                    mostrarCartaMultiP(cartaCoord1);
-                    mostrarCartaMultiP(cartaCoord2);
+                    mostrarCartaMultiP(cartasCoord[0], cartasCoord[1]);
+                    mostrarCartaMultiP(cartasCoord[2], cartasCoord[3]);
 
                     Thread.sleep(400);
                     // Se virou cartas iguais
-                    if (tabuleiro[cartaCoord1[1] - 1][cartaCoord1[0]
-                            - 1].cartaNome == tabuleiro[cartaCoord2[1] - 1][cartaCoord2[0] - 1].cartaNome) {
-                        tabuleiro[cartaCoord1[1] - 1][cartaCoord1[0] - 1].virado = true;
-                        tabuleiro[cartaCoord2[1] - 1][cartaCoord2[0] - 1].virado = true;
+                    if (tabuleiro[cartasCoord[1] - 1][cartasCoord[0]
+                            - 1].cartaNome == tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].cartaNome) {
+                        tabuleiro[cartasCoord[1] - 1][cartasCoord[0] - 1].virado = true;
+                        tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].virado = true;
                         pontuacaoServer += 100;
                     } else {
                         vez++;
                     }
 
                 } else {
-                    String[] inputCoordStr = new String[0];
 
-                    jogadorNaVez.out.printf(
-                            "Sua vez! Escolha coordenadas X e coordenadas Y para a primeira carta! Formato: X Y\n");
-                    while (true) {
-                        while (true) {
-                            try {
-                                try {
-                                    inputCoordStr = jogadorNaVez.in.readLine().trim().split("\\s+");
-                                } catch (IOException e) {
-                                    jogadorNaVez.out.printf(
-                                            "Ocorreu um erro com seu input, re-insira-o. Lembre-se: Apenas números naturais no formato: X Y\n");
-                                    continue;
-                                }
-                                if (inputCoordStr.length < 2)
-                                    continue;
+                    while (cartasValidas < 1) {
+                        jogadorNaVez.out.printf(
+                                "Sua vez! Escolha coordenadas X e coordenadas Y! Formato: X Y ou X1 Y1 X2 Y2\n");
+                        cursorEstaNaFileira++;
 
-                                cartaCoord1[0] = Integer.parseInt(inputCoordStr[0]);
-                                cartaCoord1[1] = Integer.parseInt(inputCoordStr[1]);
-                                break;
-                            } catch (NumberFormatException e) {
-                                jogadorNaVez.out.printf(
-                                        "Ocorreu um erro com seu input, re-insira-o. Lembre-se: Apenas números naturais no formato: X Y\n");
-                            }
-                        }
+                        inputsStr = jogadorNaVez.in.readLine().trim().split("\\s+");
 
-                        limparTela(jogadorNaVez);
-                        enviarTabuleiroAtual(jogadorNaVez);
-
-                        if (cartaCoord1[0] > tabuleiro[0].length || cartaCoord1[1] > tabuleiro.length
-                                || cartaCoord1[0] < 0 || cartaCoord1[1] < 0) {
-                            jogadorNaVez.out.println("Carta fora de alcance.");
+                        if (inputsStr.length < 2 || inputsStr.length > 4) {
+                            jogadorNaVez.out.printf(
+                                    "Coordenadas inseridas inválidas: %d entradas. Esperado: 2 ou 4 entradas.\n",
+                                    inputsStr.length);
                             cursorEstaNaFileira++;
+                            Thread.sleep(400);
                             continue;
                         }
 
-                        if (tabuleiro[cartaCoord1[1] - 1][cartaCoord1[0] - 1].virado) {
-                            jogadorNaVez.out.println("Carta já virada! Escolha outra.");
-                            cursorEstaNaFileira++;
-                        } else
-                            break;
-                    }
+                        try {
+                            cartasCoord[0] = Integer.parseInt(inputsStr[0]);
+                            cartasCoord[1] = Integer.parseInt(inputsStr[1]);
 
-                    jogadorNaVez.out.printf("Bom! Agora, a segunda carta!\n");
-
-                    while (true) {
-                        while (true) {
-                            try {
-                                try {
-                                    inputCoordStr = jogadorNaVez.in.readLine().trim().split("\\s+");
-                                } catch (IOException e) {
-                                    jogadorNaVez.out.printf(
-                                            "Ocorreu um erro com seu input, re-insira-o. Lembre-se: Apenas números naturais no formato: X Y\n");
-                                    continue;
-                                }
-                                if (inputCoordStr.length < 2)
-                                    continue;
-                                cartaCoord2[0] = Integer.parseInt(inputCoordStr[0]);
-                                cartaCoord2[1] = Integer.parseInt(inputCoordStr[1]);
-                                break;
-                            } catch (NumberFormatException e) {
-                                jogadorNaVez.out.printf(
-                                        "Ocorreu um erro com seu input, re-insira-o. Lembre-se: Apenas números naturais no formato: X Y");
+                            if (cartasCoord[0] > tabuleiro[0].length || cartasCoord[1] > tabuleiro.length
+                                    || cartasCoord[0] <= 0 || cartasCoord[1] <= 0) {
+                                jogadorNaVez.out.println("Carta fora de alcance.");
+                                cursorEstaNaFileira++;
+                                Thread.sleep(400);
+                                continue;
                             }
-                        }
+                            if (tabuleiro[cartasCoord[1] - 1][cartasCoord[0] - 1].virado) {
+                                jogadorNaVez.out.println("Carta já virada! Escolha outra.");
+                                Thread.sleep(400);
+                                cursorEstaNaFileira++;
+                                continue;
+                            }
 
-                        limparTela(jogadorNaVez);
-                        enviarTabuleiroAtual(jogadorNaVez);
-
-                        if (cartaCoord2[0] > tabuleiro[0].length || cartaCoord2[1] > tabuleiro.length
-                                || cartaCoord2[0] < 0 || cartaCoord2[1] < 0) {
-                            jogadorNaVez.out.println("Carta fora de alcance.");
+                            cartasValidas++;
+                        } catch (NumberFormatException e) {
+                            jogadorNaVez.out.println("Formato incorreto! Formato esperado(números naturais): X Y");
                             cursorEstaNaFileira++;
+                            Thread.sleep(400);
                             continue;
                         }
 
-                        if (tabuleiro[cartaCoord2[1] - 1][cartaCoord2[0] - 1].virado
-                                || (cartaCoord1[0] == cartaCoord2[0]) && (cartaCoord1[1] == cartaCoord2[1])) {
-                            jogadorNaVez.out.println("Carta já virada! Escolha outra.");
-                            cursorEstaNaFileira++;
-                        } else
-                            break;
+                        // →TENTA← conseguir uma quarta carta, para adiantar o trabalho do jogador
+                        if (inputsStr.length == 4) {
+                            try {
+                                cartasCoord[2] = Integer.parseInt(inputsStr[2]);
+                                cartasCoord[3] = Integer.parseInt(inputsStr[3]);
+
+                                if (cartasCoord[2] <= 0 || cartasCoord[3] <= 0 // Valor negativo
+                                        || (cartasCoord[0] == cartasCoord[2]) && (cartasCoord[1] == cartasCoord[3]) // Carta
+                                                                                                                    // repetida
+                                        || tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].virado) { // Carta já
+                                                                                                       // virada
+                                    continue; // Deixa passar (vai perguntar a segunda carta depois)
+                                }
+
+                                cartasValidas++;
+                            } catch (NumberFormatException ignore) {
+                            }
+                        }
                     }
-                    // fim do input
+
+                    while (cartasValidas < 2) {
+
+                        jogadorNaVez.out.printf("Bom! Agora, a segunda carta!\n");
+                        cursorEstaNaFileira++;
+
+                        inputsStr = jogadorNaVez.in.readLine().trim().split("\\s+");
+
+                        if (inputsStr.length < 2) {
+                            jogadorNaVez.out.printf(
+                                    "Coordenadas inseridas inválidas: %d entradas. Esperado: 2 entradas.\n",
+                                    inputsStr.length);
+                            cursorEstaNaFileira++;
+                            Thread.sleep(400);
+                            continue;
+                        }
+
+                        try {
+                            cartasCoord[2] = Integer.parseInt(inputsStr[0]);
+                            cartasCoord[3] = Integer.parseInt(inputsStr[1]);
+
+                            if (cartasCoord[2] > tabuleiro[0].length || cartasCoord[3] > tabuleiro.length // Carta fora
+                                                                                                          // de alcance
+                                    || cartasCoord[2] <= 0 || cartasCoord[3] <= 0) { // Valor negativo
+                                jogadorNaVez.out.println("Carta fora de alcance.");
+                                cursorEstaNaFileira++;
+                                Thread.sleep(400);
+                                continue;
+                            }
+                            if (tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].virado // Carta já virada
+                                    || (cartasCoord[0] == cartasCoord[2]) && (cartasCoord[1] == cartasCoord[3])) { // Carta
+                                                                                                                   // igual
+                                                                                                                   // à
+                                                                                                                   // primeira
+                                                                                                                   // carta
+                                jogadorNaVez.out.println("Carta já virada! Escolha outra.");
+                                Thread.sleep(400);
+                                cursorEstaNaFileira++;
+                                continue;
+                            }
+
+                            cartasValidas++;
+                        } catch (NumberFormatException e) {
+                            jogadorNaVez.out.println("Formato incorreto! Formato esperado(números naturais): X Y");
+                            cursorEstaNaFileira++;
+                        }
+                    }
 
                     atualizarTabuleiroJogadores();
 
-                    mostrarCartaMultiP(cartaCoord1);
-                    mostrarCartaMultiP(cartaCoord2);
+                    mostrarCartaMultiP(cartasCoord[0], cartasCoord[1]);
+                    mostrarCartaMultiP(cartasCoord[2], cartasCoord[3]);
 
                     Thread.sleep(400);
                     // Se virou cartas iguais
-                    if (tabuleiro[cartaCoord1[1] - 1][cartaCoord1[0]
-                            - 1].cartaNome == tabuleiro[cartaCoord2[1] - 1][cartaCoord2[0] - 1].cartaNome) {
-                        tabuleiro[cartaCoord1[1] - 1][cartaCoord1[0] - 1].virado = true;
-                        tabuleiro[cartaCoord2[1] - 1][cartaCoord2[0] - 1].virado = true;
+                    if (tabuleiro[cartasCoord[1] - 1][cartasCoord[0]
+                            - 1].cartaNome == tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].cartaNome) {
+                        tabuleiro[cartasCoord[1] - 1][cartasCoord[0] - 1].virado = true;
+                        tabuleiro[cartasCoord[3] - 1][cartasCoord[2] - 1].virado = true;
                         jogadorNaVez.points += 100;
                     } else {
                         vez++;
@@ -1140,11 +1294,48 @@ public class BrincandoComTCA {
             jogadores.sort(Comparator.comparingInt((Jogador j) -> j.points).reversed());
 
             int place = 1;
-            for(Jogador jogadorP : jogadores){
-                for(Jogador jogador : jogadores){
-                    jogador.out.printf("%dst Place (%d points): %s\n", place, jogadorP.points, jogadorP.name);
+            boolean serverFoiImprimido = false; // Evitar que imprima a pontuação do servidor para cada jogador com
+                                                // pontuação igual à do servidor
+
+            for (Jogador jogadorRank : jogadores) {
+                if (pontuacaoServer >= jogadorRank.points && !serverFoiImprimido) { // Server teve maior pontuação,
+                                                                                    // então imprime ele primeiro, e só
+                                                                                    // em seguida a pontuação do jogador
+                                                                                    // (sim, o server tem prioridade no
+                                                                                    // Ranking).
+                    System.out.printf("%dst Place (%d points): %s\n", place, pontuacaoServer, "SERVER");
+                    serverFoiImprimido = true;
+                    place++;
                 }
+                System.out.printf("%dst Place (%d points): %s\n", place, jogadorRank.points, jogadorRank.name);
                 place++;
+            }
+            if (!serverFoiImprimido) {
+                System.out.printf("%dst Place (%d points): %s\n", place, pontuacaoServer, "SERVER");
+            }
+
+            for (Jogador jogadorToPrint : jogadores) {
+                place = 1;
+                serverFoiImprimido = false;
+
+                for (Jogador jogadorRank : jogadores) {
+                    if (pontuacaoServer >= jogadorRank.points && !serverFoiImprimido) { // Server teve maior pontuação,
+                                                                                        // então imprime ele primeiro, e
+                                                                                        // só em seguida a pontuação do
+                                                                                        // jogador (sim, o server tem
+                                                                                        // prioridade no Ranking).
+                        jogadorToPrint.out.printf("%dst Place (%d points): %s\n", place, pontuacaoServer, "SERVER");
+                        serverFoiImprimido = true;
+                        place++;
+                    }
+                    jogadorToPrint.out.printf("%dst Place (%d points): %s\n", place, jogadorRank.points,
+                            jogadorRank.name);
+                    place++;
+                }
+
+                if (!serverFoiImprimido) {
+                    jogadorToPrint.out.printf("%dst Place (%d points): %s\n", place, pontuacaoServer, "SERVER");
+                }
             }
 
         } catch (IOException e) {
@@ -1222,6 +1413,13 @@ public class BrincandoComTCA {
                 mudarCor(COR_PADRAO);
                 try {
                     fileiras = Integer.parseInt(TECLADO.nextLine());
+                    if (fileiras > 10) {
+                        mudarCor(1);
+                        System.out.println("Tamanho incompativel, digite novamente MAX 10");
+                        mudarCor(COR_PADRAO);
+                        Thread.sleep(400);
+                        continue;
+                    }
                     break;
                 } catch (NumberFormatException e) {
                     Thread.sleep(100);
@@ -1232,14 +1430,21 @@ public class BrincandoComTCA {
                 }
             }
 
-            System.out.println();
-
             while (true) {
                 mudarCor(15);
                 System.out.printf("Insira uma quantidade de colunas: ");
                 mudarCor(COR_PADRAO);
+
                 try {
                     colunas = Integer.parseInt(TECLADO.nextLine());
+                    if (colunas > 10) {
+                        mudarCor(1);
+                        System.out.println("Tamanho incompativel, digite novamente MAX 10");
+                        mudarCor(COR_PADRAO);
+                        Thread.sleep(400);// tempe em milisegundo
+
+                        continue;
+                    }
                     break;
                 } catch (NumberFormatException e) {
                     Thread.sleep(100);
@@ -1262,6 +1467,7 @@ public class BrincandoComTCA {
                 mudarCor(COR_PADRAO);
                 System.out.println();
                 Thread.sleep(2000);
+
             }
         }
 
@@ -1286,9 +1492,9 @@ public class BrincandoComTCA {
         List<String> linhas;
         try {
             linhas = Files.readAllLines(Paths.get("dicionario.txt")); // Carrega arquivo de palavras
-            linhas.get(listaPalavras.length - 1); // Quick-check para checar a integridade(mínima, mesmo que parcial) do
-                                                  // arquivo. (se não possui o mínimo de linhas necessário, problema.)
-        } catch (IOException e) {
+            linhas.get(listaPalavras.length); // Quick-check para checar a integridade(mínima, mesmo que parcial) do
+                                              // arquivo. (se não possui o mínimo de linhas necessário, problema.)
+        } catch (IndexOutOfBoundsException | IOException e) {
             mudarCor(1);
             System.out.println(
                     "Arquivo de dicionário não encontrado ou muito pequeno, por favor, reinstale o jogo ou crie um dicionário.");
@@ -1298,7 +1504,7 @@ public class BrincandoComTCA {
 
         String palavra;
         for (int i = 0; i < listaPalavras.length; i++) {
-            palavra = linhas.get(pegarNumeroAleatorio(0, linhas.size() - 1)); // Palavra aleatória do dicionário
+            palavra = linhas.get(pegarNumeroAleatorio(1, linhas.size() - 1)); // Palavra aleatória do dicionário
 
             // Checa se já existe na listaPalavras
             if (devolverExistenciaDeCorrespondencia(listaPalavras, palavra)) {
@@ -1353,15 +1559,15 @@ public class BrincandoComTCA {
                 }
             }
 
-            if(escolhaSPMP > 2 || escolhaSPMP < 1){
+            if (escolhaSPMP > 2 || escolhaSPMP < 1) {
                 mudarCor(1);
                 System.out.println("\nSua resposta precisa ser '1' ou '2'!");
                 mudarCor(COR_PADRAO);
-            }else{
+            } else {
                 break;
             }
             Thread.sleep(300);
-        
+
         }
 
         switch (escolhaSPMP) {
