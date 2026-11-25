@@ -3,7 +3,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.file.*;
 
-class Carta {
+class Carta {// ele guarda o nome de cada carta, se for par ele vira
     String cartaNome;
     boolean virado = false;
 
@@ -12,15 +12,17 @@ class Carta {
     }
 }
 
-class Jogador {
+class Jogador {// Informações da conexão de cada jogador
     Socket conn;
     PrintWriter out;
     BufferedReader in;
     String name;
-    int vez;
     int points = 0;
+    int vez;
 
     public Jogador(Socket conn, String name, PrintWriter out, BufferedReader in) throws IOException {
+        if (conn.equals(null))
+            return;
         // Se o método que chamou "new Jogador()" já tiver criado um "in" ou um "out",
         // pra quê fazer outro? Podemos utilizar o mesmo "in" e "out".
         // Se o método que chamou "new Jogador()" não criou nem "in" nem "out", não tem
@@ -90,46 +92,6 @@ public class BrincandoComTCA {
                 "╚══════╝╚═╝  ╚═══╝╚═════╝     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝");
     }
 
-    static long inicioCronometro = 0;
-
-    // Começa (ou recomeça) a contar o tempo do zero.
-    public static void iniciarCronometro() {
-        inicioCronometro = System.currentTimeMillis();
-    }
-
-    // Retorna quantos segundos passaram desde o iniciarCronometro().
-    // O valor tem casas decimais: 1.5 quer dizer um segundo e meio.
-    public static double segundosPassados() {
-        long agora = System.currentTimeMillis();
-        return (agora - inicioCronometro) / 1000.0;
-    }
-
-    
-    // Pausa o programa por um tempo, em milissegundos (1000 = 1 segundo).
-    public static void esperar(int milissegundos) {
-        try {
-            Thread.sleep(milissegundos);
-        } catch (InterruptedException e) {
-            // não faz nada: se a espera for interrompida, o programa só continua
-            System.out.println(inicioCronometro);
-        }
-    }
-
-    public static void imprimirTempoDeJogo(){
-        int segundos = (int) segundosPassados();
-        String tempo = "";
-
-        if(segundos>= 60*60){
-            tempo += Math.floor(segundos/(60*60) *10)/10 + " horas";
-        }else if(segundos>=60){
-            tempo += Math.floor(segundos/60 *10)/10 + " minutos";
-        }else{
-            tempo += segundos + " segundos";
-        }
-
-        System.out.printf("Tempo de jogo: " + tempo + ".\n");
-    }
-
     // Métodos do Ló
 
     public static int pegarNumeroAleatorio(int min, int max) {
@@ -169,13 +131,13 @@ public class BrincandoComTCA {
         }
     }
 
-    public static void jogadorGotoXY(Jogador jogador, int linha, int coluna) {
+    public static void jogadorCursorGoToXY(Jogador jogador, int linha, int coluna) {
         char escCode = 0x1B;
         jogador.out.print(String.format("%c[%d;%df", escCode, linha, coluna));
         jogador.out.flush();
     }
 
-    public static void allJogadoresGotoXY(int linha, int coluna) {
+    public static void allJogadoresCursorGoToXY(int linha, int coluna) {
         char escCode = 0x1B;
         for (Jogador jogador : jogadores) {
             jogador.out.print(String.format("%c[%d;%df", escCode, linha, coluna));
@@ -208,37 +170,23 @@ public class BrincandoComTCA {
         return maior;
     }
 
-    public static void imprimirMatriz(int[][] matriz) {
-        if (matriz == null)
-            return;
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[0].length; j++) {
-                System.out.printf("%d ", matriz[i][j]);
-            }
-            System.out.println();
-            cursorEstaNaFileira++;
-        }
-    }
-
     public static void imprimirTabuleiroAtual() {
         if (maiorPalavraCaracteres == 0)
             maiorPalavraCaracteres = pegarQntCaracteresMaiorPalavra(tabuleiro);
 
         // Indices
-        System.out.printf("   ");
+        System.out.printf("  ");
+
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            System.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
-+ " ".repeat(maiorPalavraCaracteres / 2));
-            if(maiorPalavraCaracteres%2!=0){
-                System.out.printf(" ");
-            }
+            System.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
+                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres / 2 % 1 > 0 ? 1 : 0));
         }
 
         System.out.println();
         cursorEstaNaFileira++;
 
         for (int i = 0; i < tabuleiro.length; i++) {
-            System.out.printf("%3d ", i + 1); // Index
+            System.out.printf("%2d ", i + 1); // Index
             for (int j = 0; j < tabuleiro[0].length; j++) {
                 if (tabuleiro[i][j].virado) {
                     System.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
@@ -259,19 +207,16 @@ public class BrincandoComTCA {
             maiorPalavraCaracteres = pegarQntCaracteresMaiorPalavra(tabuleiro);
 
         // Indices
-        System.out.printf("   ");
+        System.out.printf("  ");
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            System.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
-+ " ".repeat(maiorPalavraCaracteres / 2));
-            if(maiorPalavraCaracteres%2!=0){
-                System.out.printf(" ");
-            }
+            System.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
+                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres / 2 % 1 > 0 ? 1 : 0));
         }
         System.out.println();
         cursorEstaNaFileira++;
 
         for (int i = 0; i < tabuleiro.length; i++) {
-            System.out.printf("%3d ", i + 1); // Index
+            System.out.printf("%2d ", i + 1); // Index
             for (int j = 0; j < tabuleiro[0].length; j++) {
                 System.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
             }
@@ -280,45 +225,13 @@ public class BrincandoComTCA {
         }
     }
 
-    public static void imprimirMatrizEscondida(Carta[][] matriz) {
-        if (matriz == null)
-            return;
-        if (maiorPalavraCaracteres == 0)
-            maiorPalavraCaracteres = pegarQntCaracteresMaiorPalavra(matriz);
+    public static char consertarEntrada(String texto) {
+        String entradaConsertada = texto.trim().toLowerCase();
 
-        // Indices
-        System.out.printf("   ");
-        for (int i = 0; i < tabuleiro[0].length; i++) {
-            System.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
-+ " ".repeat(maiorPalavraCaracteres / 2));
-            if(maiorPalavraCaracteres%2!=0){
-                System.out.printf(" ");
-            }
-        }
-        System.out.println();
-        cursorEstaNaFileira++;
-
-        for (int i = 0; i < matriz.length; i++) {
-            System.out.printf("%d ", i + 1);
-            for (int j = 0; j < matriz[0].length; j++) {
-                // System.out.printf( "%-*s", maiorPalavraCaracteres+1, matriz[i][j].cartaNome
-                // ); // OLD VERSION (descobri que só funciona em C e C++ ._. )
-                for (int k = 0; k < maiorPalavraCaracteres; k++)
-                    System.out.printf("_");
-                System.out.printf(" ");
-            }
-            System.out.println();
-            cursorEstaNaFileira++;
-        }
-    }
-
-    public static char converterStringToCharSanityzed(String texto) {
-        String sanityzedText = texto.trim().toLowerCase();
-
-        if (sanityzedText.isEmpty()) {
+        if (entradaConsertada.isEmpty()) {
             return ' ';
         }
-        return sanityzedText.charAt(0);
+        return entradaConsertada.charAt(0);
     }
 
     public static boolean descobrirConnExiste(Socket socket) {
@@ -347,7 +260,8 @@ public class BrincandoComTCA {
         }
     }
 
-    public static void sendAllConnectedPlayers(String text, Socket exceptSocket, String exceptName) throws IOException {
+    public static void enviarTextoTodosJogadores(String text, Socket exceptSocket, String exceptName)
+            throws IOException {
         for (Jogador jogador : jogadores) {
             if (jogador.name.equals(exceptName) || jogador.conn.equals(exceptSocket))
                 continue;
@@ -364,11 +278,21 @@ public class BrincandoComTCA {
             // Indices
             jogador.out.printf("  ");
             for (int i = 0; i < tabuleiro[0].length; i++) {
-                jogador.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
-+ " ".repeat(maiorPalavraCaracteres / 2));
-            if(maiorPalavraCaracteres/2 %1 > 0){
-                jogador.out.printf(" ");
-            }
+                jogador.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
+                        + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
+                                                                                                                        // (maiorPalavraCaracteres/2)
+                                                                                                                        // i
+                                                                                                                        // (maiorPalavraCaracteres/2)
+                                                                                                                        // (caso
+                                                                                                                        // "maiorPalavraCaracteres/2"
+                                                                                                                        // dê
+                                                                                                                        // número
+                                                                                                                        // quebrado,
+                                                                                                                        // adicionar
+                                                                                                                        // 1
+                                                                                                                        // espaço
+                                                                                                                        // no
+                                                                                                                        // final)
             }
             jogador.out.println();
 
@@ -400,11 +324,21 @@ public class BrincandoComTCA {
         // Indices
         jogador.out.printf("  ");
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            jogador.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
-+ " ".repeat(maiorPalavraCaracteres / 2));
-            if(maiorPalavraCaracteres/2 %1 > 0){
-                jogador.out.printf(" ");
-            }
+            jogador.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
+                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
+                                                                                                                    // (maiorPalavraCaracteres/2)
+                                                                                                                    // i
+                                                                                                                    // (maiorPalavraCaracteres/2)
+                                                                                                                    // (caso
+                                                                                                                    // "maiorPalavraCaracteres/2"
+                                                                                                                    // dê
+                                                                                                                    // número
+                                                                                                                    // quebrado,
+                                                                                                                    // adicionar
+                                                                                                                    // 1
+                                                                                                                    // espaço
+                                                                                                                    // no
+                                                                                                                    // final)
         }
         jogador.out.println();
 
@@ -435,13 +369,22 @@ public class BrincandoComTCA {
             // Indices
             jogador.out.printf("  ");
             for (int i = 0; i < tabuleiro[0].length; i++) {
-                jogador.out.printf(" ".repeat((int)Math.floor(maiorPalavraCaracteres/2)) + (i + 1)
-+ " ".repeat(maiorPalavraCaracteres / 2));
-            if(maiorPalavraCaracteres/2 %1 > 0){
-                jogador.out.printf(" ");
+                jogador.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
+                        + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
+                                                                                                                        // (maiorPalavraCaracteres/2)
+                                                                                                                        // i
+                                                                                                                        // (maiorPalavraCaracteres/2)
+                                                                                                                        // (caso
+                                                                                                                        // "maiorPalavraCaracteres/2"
+                                                                                                                        // dê
+                                                                                                                        // número
+                                                                                                                        // quebrado,
+                                                                                                                        // adicionar
+                                                                                                                        // 1
+                                                                                                                        // espaço
+                                                                                                                        // no
+                                                                                                                        // final)
             }
-            }
-
             jogador.out.println();
 
             for (int i = 0; i < tabuleiro.length; i++) {
@@ -512,7 +455,7 @@ public class BrincandoComTCA {
         for (int i = 0; i <= cursorEstaNaFileira + tabuleiro.length + 4; i++) { // + tabuleiro.length para não depender
                                                                                 // apenas do cursor || +4 por causa de
                                                                                 // uns inputs perdidos aqui e ali
-            jogadorGotoXY(jogador, i, 0);
+            jogadorCursorGoToXY(jogador, i, 0);
 
             for (int j = 0; j < (maiorPalavraCaracteres + 1) * tabuleiro[0].length * 2; j++) {
                 jogador.out.printf(" ");
@@ -527,7 +470,7 @@ public class BrincandoComTCA {
         for (int i = 0; i <= cursorEstaNaFileira + 4; i++) { // +4 por causa de uns inputs perdidos aqui e ali
             gotoXY(i, 0);
 
-            System.out.printf(" ".repeat((maiorPalavraCaracteres + 1) * tabuleiro[0].length + 3)); // +3 porque: pula indice
+            System.out.printf(" ".repeat((maiorPalavraCaracteres + 1) * tabuleiro[0].length));
         }
         cursorEstaNaFileira = 1;
         System.out.printf("\033[H\033[2J");
@@ -542,7 +485,7 @@ public class BrincandoComTCA {
                                                                                     // depender apenas do cursor || +4
                                                                                     // por causa de uns inputs perdidos
                                                                                     // aqui e ali
-                jogadorGotoXY(jogador, i, 0);
+                jogadorCursorGoToXY(jogador, i, 0);
 
                 for (int j = 0; j < (maiorPalavraCaracteres + 1) * tabuleiro[0].length * 2; j++) {
                     jogador.out.printf(" ");
@@ -581,25 +524,25 @@ public class BrincandoComTCA {
                                                                       // *(maiorPalavraCaracteres+1) porque: avançar os
                                                                       // caracteres da carta para o lado, +1 por causa
                                                                       // dos espaços entre cada palavra
-        allJogadoresGotoXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4); // O mesmo para os jogadores LAN
+        allJogadoresCursorGoToXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4); // O mesmo para os jogadores LAN
         // Cursor no começo da palavra
 
         // Primeiro, tira os "_"(underlines) e sobreescreve para espaços vazios
         System.out.printf(" ".repeat(maiorPalavraCaracteres));
-        sendAllConnectedPlayers(" ".repeat(maiorPalavraCaracteres), null, null);
+        enviarTextoTodosJogadores(" ".repeat(maiorPalavraCaracteres), null, null);
 
         // Depois, volta para o começo da palavra
         gotoXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4);
-        allJogadoresGotoXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4);
+        allJogadoresCursorGoToXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4);
 
         // Depois, imprime palavra normalmente
         Thread.sleep(400);
         System.out.printf(tabuleiro[y - 1][x - 1].cartaNome);
-        sendAllConnectedPlayers(tabuleiro[y - 1][x - 1].cartaNome, null, null);
+        enviarTextoTodosJogadores(tabuleiro[y - 1][x - 1].cartaNome, null, null);
 
         // Volta para o fim do tabuleiro(coluna do "cursorEstaNaFileira")
         gotoXY(cursorEstaNaFileira, 0);
-        allJogadoresGotoXY(cursorEstaNaFileira, 0);
+        allJogadoresCursorGoToXY(cursorEstaNaFileira, 0);
 
     }
 
@@ -723,7 +666,7 @@ public class BrincandoComTCA {
                                                                                                                // não é
                                                                                                                // contabilizado
             out.printf("Bem-vindo! Você agora está jogando!\n");
-            sendAllConnectedPlayers("Jogador adicionado! Digam oi para " + name + "!\n", jogadorConn, name);
+            enviarTextoTodosJogadores("Jogador adicionado! Digam oi para " + name + "!\n", jogadorConn, name);
 
         } catch (IOException ignore) {
         }
@@ -745,8 +688,6 @@ public class BrincandoComTCA {
         atualizarTabuleiroServer();
 
         partidaRunning = true;
-        iniciarCronometro();
-
         while (partidaRunning) {
             String[] inputsStr = new String[2];
             int[] cartasCoord = new int[4];
@@ -882,7 +823,6 @@ public class BrincandoComTCA {
         mudarCor(3);
         telinhafim();
         mudarCor(COR_PADRAO);
-        imprimirTempoDeJogo();
         System.out.printf("Sua pontuação: " + pontuacao + ".\n");
 
     }
@@ -903,7 +843,7 @@ public class BrincandoComTCA {
                 continue;
             }
 
-            inputChr = converterStringToCharSanityzed(inputStr);
+            inputChr = consertarEntrada(inputStr);
 
             if (!(inputChr == 'y' || inputChr == 'n')) {
                 Thread.sleep(500);
@@ -942,7 +882,9 @@ public class BrincandoComTCA {
                 while (!partidaRunning) {
                     try {
                         Socket client = server.accept();
-                        novaConexao(client, senha);
+                        new Thread(() -> {
+                            novaConexao(client, senha);
+                        }).start();
                     } catch (IOException ignore) {
                     }
                 }
@@ -963,14 +905,11 @@ public class BrincandoComTCA {
                 TECLADO.nextLine();
                 System.out.printf("Tem certeza que deseja iniciar a partida? (y/N) ");
 
-                inputChr = converterStringToCharSanityzed(TECLADO.nextLine());
+                inputChr = consertarEntrada(TECLADO.nextLine());
                 if (inputChr == 'y')
                     break;
             }
             partidaRunning = true;
-            
-            iniciarCronometro();
-            
 
             // Partida começou
             cursorEstaNaFileira = 1;
@@ -1009,9 +948,9 @@ public class BrincandoComTCA {
                 // Anuncia vez do jogador
                 // se jogadorNaVez continuar "null", é vez do Server
                 if (jogadorNaVez == null) {
-                    sendAllConnectedPlayers("Vez de Server. Aguarde sua vez.\n", null, null);
+                    enviarTextoTodosJogadores("Vez de Server. Aguarde sua vez.\n", null, null);
                 } else {
-                    sendAllConnectedPlayers("Vez de " + jogadorNaVez.name + ". Aguarde sua vez.\n", jogadorNaVez.conn,
+                    enviarTextoTodosJogadores("Vez de " + jogadorNaVez.name + ". Aguarde sua vez.\n", jogadorNaVez.conn,
                             jogadorNaVez.name);
                     System.out.printf("Vez de " + jogadorNaVez.name + ". Aguarde sua vez.\n");
                 }
