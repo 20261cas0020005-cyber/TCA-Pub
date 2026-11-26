@@ -41,6 +41,7 @@ public class BrincandoComTCA {
     public static final int MAX_TENTATIVAS_SENHA = 5;
     public static final int TEMPO_SEGUNDOS_ENTRE_SENHAS = 1; // Contra brute-force
     public static final int TEMPO_SEGUNDOS_ESPERA_LIMITETENTATIVAS = 5;
+    public static final char CARACTERE_ESCONDIDO = '⸻';
 
     public static final Scanner TECLADO = new Scanner(System.in);
     public static Carta[][] tabuleiro;
@@ -92,6 +93,13 @@ public class BrincandoComTCA {
                 "╚══════╝╚═╝  ╚═══╝╚═════╝     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝");
     }
 
+    public static void enter(){
+        System.out.printf("Aperte ");
+        mudarCor(2);
+        System.out.printf("ENTER");
+        mudarCor(COR_PADRAO);
+        System.out.printf(" para começar\n");
+    }
     // Métodos do Ló
 
     public static int pegarNumeroAleatorio(int min, int max) {
@@ -192,7 +200,9 @@ public class BrincandoComTCA {
                     System.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
                 } else {
                     for (int k = 0; k < maiorPalavraCaracteres; k++) {
-                        System.out.printf("_");
+                        mudarCor(4);
+                        System.out.print(CARACTERE_ESCONDIDO);
+                        mudarCor(COR_PADRAO);
                     }
                     System.out.printf(" ");
                 }
@@ -304,7 +314,7 @@ public class BrincandoComTCA {
                         jogador.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
                     } else {
                         for (int k = 0; k < maiorPalavraCaracteres; k++) {
-                            jogador.out.printf("_");
+                            jogador.out.print(CARACTERE_ESCONDIDO);
                         }
                         jogador.out.printf(" ");
                     }
@@ -350,7 +360,7 @@ public class BrincandoComTCA {
                     jogador.out.printf("%-" + (maiorPalavraCaracteres + 1) + "s", tabuleiro[i][j].cartaNome);
                 } else {
                     for (int k = 0; k < maiorPalavraCaracteres; k++) {
-                        jogador.out.printf("_");
+                        jogador.out.print(CARACTERE_ESCONDIDO);
                     }
                     jogador.out.printf(" ");
                 }
@@ -527,7 +537,7 @@ public class BrincandoComTCA {
         allJogadoresCursorGoToXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4); // O mesmo para os jogadores LAN
         // Cursor no começo da palavra
 
-        // Primeiro, tira os "_"(underlines) e sobreescreve para espaços vazios
+        // Primeiro, tira os CARACTERE_ESCONDIDO(underlines) e sobreescreve para espaços vazios
         System.out.printf(" ".repeat(maiorPalavraCaracteres));
         enviarTextoTodosJogadores(" ".repeat(maiorPalavraCaracteres), null, null);
 
@@ -564,7 +574,7 @@ public class BrincandoComTCA {
                                                                       // dos espaços entre cada palavra
         // Cursor no começo da palavra
 
-        // Primeiro, tira os "_"(underlines) e sobreescreve para espaços vazios
+        // Primeiro, tira os CARACTERE_ESCONDIDO(underlines) e sobreescreve para espaços vazios
         System.out.printf(" ".repeat(maiorPalavraCaracteres));
 
         // Depois, volta para o começo da palavra
@@ -891,17 +901,25 @@ public class BrincandoComTCA {
             }).start();
 
             // Feedback ao usuário servidor
-            String meuIPPrivado = Inet4Address.getLocalHost().getHostAddress();
+            String meuIPPrivado = java.util.Collections.list(java.net.NetworkInterface.getNetworkInterfaces()).stream()
+            .flatMap(n -> java.util.Collections.list(n.getInetAddresses()).stream())
+            .filter(a -> a instanceof java.net.Inet4Address && a.getHostAddress().startsWith("192"))
+            .map(java.net.InetAddress::getHostAddress).findFirst().orElse("<Error>");
 
             System.out.printf(
-                    "\nPartida hospedada em: %s:%s\nPara outros jogadores se conectarem, insiram 'nc %s %s' num terminal.",
+                    "\nPartida hospedada em: %s:%s\nPara outros jogadores se conectarem, insiram 'nc %s %s' num terminal.\n",
                     meuIPPrivado, PORT, meuIPPrivado, PORT);
             Thread.sleep(2000);
+            System.out.println();
 
             // Começar partida ao comando (enter)
 
             while (true) {
-                System.out.printf("\n\nPara começar a partida, apenas... aperte Enter e confirme.\n");
+                System.out.printf("Para começarmos... Aperte ");
+                mudarCor(2);
+                System.out.printf("ENTER");
+                mudarCor(COR_PADRAO);
+                System.out.printf(" e confirme!\n");
                 TECLADO.nextLine();
                 System.out.printf("Tem certeza que deseja iniciar a partida? (y/N) ");
 
@@ -1333,14 +1351,16 @@ public class BrincandoComTCA {
         mudarCor(3);
         telaInicial();
         mudarCor(COR_PADRAO);
-
         System.out.println();
+        enter();
+
+     
         TECLADO.nextLine();
 
         // 🌟Entradas
         Thread.sleep(500);
         mudarCor(15);
-        System.out.println("\nComeçaremos criando um tamanho para nossa mesa de jogo.");
+        System.out.print("\nComeçaremos criando um tamanho para nossa mesa de jogo.");
         mudarCor(COR_PADRAO);
         Thread.sleep(500);
         System.out.println();
@@ -1473,7 +1493,11 @@ public class BrincandoComTCA {
         tabuleiro = new Carta[fileiras][colunas];
         for (int i = 0; i < tabuleiro.length; i++) {
             for (int j = 0; j < tabuleiro[0].length; j++) {
-                tabuleiro[i][j] = new Carta(listaPalavras[mascara[i][j]]);
+                tabuleiro[i][j] = new Carta(
+                    listaPalavras[
+                        mascara[i][j]
+                    ]
+                );
             }
         }
         // ✨Tabuleiro pronto, pronto para jogar.
