@@ -41,7 +41,7 @@ public class BrincandoComTCA {
     public static final int MAX_TENTATIVAS_SENHA = 5;
     public static final int TEMPO_SEGUNDOS_ENTRE_SENHAS = 1; // Contra brute-force
     public static final int TEMPO_SEGUNDOS_ESPERA_LIMITETENTATIVAS = 5;
-    public static final char CARACTERE_ESCONDIDO = '⸻';
+    public static final char CARACTERE_ESCONDIDO = '_';
 
     public static final Scanner TECLADO = new Scanner(System.in);
     public static Carta[][] tabuleiro;
@@ -190,8 +190,8 @@ public class BrincandoComTCA {
         System.out.printf("  ");
 
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            System.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres / 2 % 1 > 0 ? 1 : 0));
+            System.out.printf(" ".repeat((int) Math.floor((maiorPalavraCaracteres+1) / 2)) + (i + 1)
+                    + " ".repeat((maiorPalavraCaracteres+1) / 2) + " ".repeat((maiorPalavraCaracteres+1) / 2 % 1 > 0 ? 1 : 0));
         }
 
         System.out.println();
@@ -223,8 +223,8 @@ public class BrincandoComTCA {
         // Indices
         System.out.printf("  ");
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            System.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres / 2 % 1 > 0 ? 1 : 0));
+            System.out.printf(" ".repeat((int) Math.floor((maiorPalavraCaracteres+1) / 2)) + (i + 1)
+                    + " ".repeat((maiorPalavraCaracteres+1) / 2) + " ".repeat((maiorPalavraCaracteres+1) / 2 % 1 > 0 ? 1 : 0));
         }
         System.out.println();
         cursorEstaNaFileira++;
@@ -292,8 +292,8 @@ public class BrincandoComTCA {
             // Indices
             jogador.out.printf("  ");
             for (int i = 0; i < tabuleiro[0].length; i++) {
-                jogador.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                        + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
+                jogador.out.printf(" ".repeat((int) Math.floor((maiorPalavraCaracteres+1) / 2)) + (i + 1)
+                        + " ".repeat((maiorPalavraCaracteres+1) / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
                                                                                                                         // (maiorPalavraCaracteres/2)
                                                                                                                         // i
                                                                                                                         // (maiorPalavraCaracteres/2)
@@ -338,8 +338,8 @@ public class BrincandoComTCA {
         // Indices
         jogador.out.printf("  ");
         for (int i = 0; i < tabuleiro[0].length; i++) {
-            jogador.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                    + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
+            jogador.out.printf(" ".repeat((int) Math.floor((maiorPalavraCaracteres+1) / 2)) + (i + 1)
+                    + " ".repeat((maiorPalavraCaracteres+1) / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
                                                                                                                     // (maiorPalavraCaracteres/2)
                                                                                                                     // i
                                                                                                                     // (maiorPalavraCaracteres/2)
@@ -383,8 +383,8 @@ public class BrincandoComTCA {
             // Indices
             jogador.out.printf("  ");
             for (int i = 0; i < tabuleiro[0].length; i++) {
-                jogador.out.printf(" ".repeat((int) Math.floor(maiorPalavraCaracteres / 2)) + (i + 1)
-                        + " ".repeat(maiorPalavraCaracteres / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
+                jogador.out.printf(" ".repeat((int) Math.floor((maiorPalavraCaracteres+1) / 2)) + (i + 1)
+                        + " ".repeat((maiorPalavraCaracteres+1) / 2) + " ".repeat(maiorPalavraCaracteres % 1 > 0 ? 1 : 0)); // Output:
                                                                                                                         // (maiorPalavraCaracteres/2)
                                                                                                                         // i
                                                                                                                         // (maiorPalavraCaracteres/2)
