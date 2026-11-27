@@ -54,10 +54,6 @@ public class BrincandoComTCA {
         System.out.println(texto);
     }
 
-    public static void fim() {
-        System.out.print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-    }
-
     public static void telaInicial() {
 
         System.out.print("      ██╗ ██████╗  ██████╗  ██████╗    ██████╗  █████╗\r\n" + //
@@ -93,12 +89,20 @@ public class BrincandoComTCA {
                 "╚══════╝╚═╝  ╚═══╝╚═════╝     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝");
     }
 
-    public static void enter(){
+    public static void enter() {
         System.out.printf("Aperte ");
         mudarCor(2);
         System.out.printf("ENTER");
         mudarCor(COR_PADRAO);
         System.out.printf(" para começar\n");
+    }
+
+    public static void Play() {
+        System.out.printf("Para começarmos... Aperte ");
+        mudarCor(2);
+        System.out.printf("ENTER");
+        mudarCor(COR_PADRAO);
+        System.out.printf(" e confirme!\n");
     }
     // Métodos do Ló
 
@@ -537,7 +541,8 @@ public class BrincandoComTCA {
         allJogadoresCursorGoToXY(objetivo, (x - 1) * (maiorPalavraCaracteres + 1) + 4); // O mesmo para os jogadores LAN
         // Cursor no começo da palavra
 
-        // Primeiro, tira os CARACTERE_ESCONDIDO(underlines) e sobreescreve para espaços vazios
+        // Primeiro, tira os CARACTERE_ESCONDIDO(underlines) e sobreescreve para espaços
+        // vazios
         System.out.printf(" ".repeat(maiorPalavraCaracteres));
         enviarTextoTodosJogadores(" ".repeat(maiorPalavraCaracteres), null, null);
 
@@ -574,7 +579,8 @@ public class BrincandoComTCA {
                                                                       // dos espaços entre cada palavra
         // Cursor no começo da palavra
 
-        // Primeiro, tira os CARACTERE_ESCONDIDO(underlines) e sobreescreve para espaços vazios
+        // Primeiro, tira os CARACTERE_ESCONDIDO(underlines) e sobreescreve para espaços
+        // vazios
         System.out.printf(" ".repeat(maiorPalavraCaracteres));
 
         // Depois, volta para o começo da palavra
@@ -902,9 +908,9 @@ public class BrincandoComTCA {
 
             // Feedback ao usuário servidor
             String meuIPPrivado = java.util.Collections.list(java.net.NetworkInterface.getNetworkInterfaces()).stream()
-            .flatMap(n -> java.util.Collections.list(n.getInetAddresses()).stream())
-            .filter(a -> a instanceof java.net.Inet4Address && a.getHostAddress().startsWith("192"))
-            .map(java.net.InetAddress::getHostAddress).findFirst().orElse("<Error>");
+                    .flatMap(n -> java.util.Collections.list(n.getInetAddresses()).stream())
+                    .filter(a -> a instanceof java.net.Inet4Address && a.getHostAddress().startsWith("192"))
+                    .map(java.net.InetAddress::getHostAddress).findFirst().orElse("<Error>");
 
             System.out.printf(
                     "\nPartida hospedada em: %s:%s\nPara outros jogadores se conectarem, insiram 'nc %s %s' num terminal.\n",
@@ -915,11 +921,7 @@ public class BrincandoComTCA {
             // Começar partida ao comando (enter)
 
             while (true) {
-                System.out.printf("Para começarmos... Aperte ");
-                mudarCor(2);
-                System.out.printf("ENTER");
-                mudarCor(COR_PADRAO);
-                System.out.printf(" e confirme!\n");
+                Play();
                 TECLADO.nextLine();
                 System.out.printf("Tem certeza que deseja iniciar a partida? (y/N) ");
 
@@ -1354,7 +1356,6 @@ public class BrincandoComTCA {
         System.out.println();
         enter();
 
-     
         TECLADO.nextLine();
 
         // 🌟Entradas
@@ -1494,10 +1495,7 @@ public class BrincandoComTCA {
         for (int i = 0; i < tabuleiro.length; i++) {
             for (int j = 0; j < tabuleiro[0].length; j++) {
                 tabuleiro[i][j] = new Carta(
-                    listaPalavras[
-                        mascara[i][j]
-                    ]
-                );
+                        listaPalavras[mascara[i][j]]);
             }
         }
         // ✨Tabuleiro pronto, pronto para jogar.
